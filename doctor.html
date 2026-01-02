@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Doctor Dashboard — Echhya’s Care</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard">
+  <section class="dashboard__layout">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="dash-sidebar">
+      <a href="index.html" class="dash-brand">
+        <svg viewBox="0 0 48 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M2 13h7l2.5-8 3.5 12 2.5-7 2.5 3H46"
+            fill="none"
+            stroke="#2F80ED"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="dash-brand__text">MediTrack Pro</span>
+      </a>
+
+      <nav class="dash-nav">
+        <button class="dash-nav__item dash-nav__item--active" data-section="dashboard">
+          <span class="dash-nav__icon">🏠</span>
+          <span>Dashboard</span>
+        </button>
+        <button class="dash-nav__item" data-section="patients">
+          <span class="dash-nav__icon">🧑‍🤝‍🧑</span>
+          <span>Patients</span>
+        </button>
+        <button class="dash-nav__item" data-section="appointments">
+          <span class="dash-nav__icon">📅</span>
+          <span>Appointments</span>
+        </button>
+        <button class="dash-nav__item" data-section="prescriptions">
+          <span class="dash-nav__icon">💊</span>
+          <span>Prescriptions</span>
+        </button>
+        <button class="dash-nav__item" data-section="profile">
+          <span class="dash-nav__icon">👤</span>
+          <span>Profile</span>
+        </button>
+        <button class="dash-nav__item" data-section="settings">
+          <span class="dash-nav__icon">⚙️</span>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="dash-sidebar__footer">
+        <button class="dash-nav__item dash-nav__item--danger" id="btnSignOutDoctor">
+          <span class="dash-nav__icon">🚪</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <main class="dash-main">
+      <!-- top header -->
+      <header class="dash-main__header">
+        <div>
+          <h1 class="dash-main__title" id="doctorGreeting">
+            Good morning, Dr. Anderson!
+          </h1>
+          <p class="dash-main__subtitle" id="doctorSubtitle">
+            You have 3 appointments today.
+          </p>
+        </div>
+        <div class="dash-main__context">
+          <span class="pill">MediTrack Healthcare Platform (Community)</span>
+        </div>
+      </header>
+
+      <!-- ========== DASHBOARD TAB ========== -->
+      <section class="tab-section tab-section--active" data-section="dashboard">
+        <!-- stat cards row -->
+        <section class="dash-row dash-row--stats">
+          <article class="card stat-card">
+            <div class="stat-card__label">Total Patients</div>
+            <div class="stat-card__value" id="statTotalPatients">4</div>
+            <div class="stat-card__meta">Active patients</div>
+          </article>
+          <article class="card stat-card">
+            <div class="stat-card__label">Today's Appointments</div>
+            <div class="stat-card__value" id="statTodayAppointments">3</div>
+            <div class="stat-card__meta">Scheduled</div>
+          </article>
+          <article class="card stat-card">
+            <div class="stat-card__label">Critical Patients</div>
+            <div class="stat-card__value" id="statCriticalPatients">1</div>
+            <div class="stat-card__meta">Need urgent follow-up</div>
+          </article>
+          <article class="card stat-card">
+            <div class="stat-card__label">Prescriptions</div>
+            <div class="stat-card__value" id="statPrescriptions">23</div>
+            <div class="stat-card__meta">Active prescriptions</div>
+          </article>
+        </section>
+
+        <!-- main grid: patient list + right column -->
+        <section class="dash-row doc-main-grid">
+          <!-- ========== PATIENT LIST ========== -->
+          <article class="card doc-patient-card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Patient List</h2>
+              </div>
+              <button class="btn btn--primary btn--small" id="dashAddPatientBtn">
+                ＋ Add Patient
+              </button>
+            </header>
+
+            <div class="doc-patient-search">
+              <input
+                type="text"
+                class="input input--large"
+                placeholder="Search patients..."
+                id="dashPatientSearch"
+              />
+            </div>
+
+            <div class="doc-patient-list" id="dashPatientList">
+              <!-- filled by JS -->
+            </div>
+          </article>
+
+          <!-- ========== RIGHT COLUMN ========== -->
+          <div class="doc-right-col">
+            <!-- Today’s schedule -->
+            <article class="card">
+              <header class="card__head">
+                <h2 class="card__title">Today's Schedule</h2>
+              </header>
+
+              <ul class="doc-schedule-list" id="dashScheduleList">
+                <!-- filled by JS -->
+              </ul>
+            </article>
+
+            <!-- Quick actions -->
+            <article class="card doc-quick-card">
+              <h2 class="card__title">Quick Actions</h2>
+              <div class="doc-quick-actions">
+                <button class="btn btn--primary btn--block" id="qaWritePrescription">
+                  📝 Write Prescription
+                </button>
+                <button class="btn btn--ghost btn--block" id="qaScheduleAppointment">
+                  📅 Schedule Appointment
+                </button>
+                <button class="btn btn--ghost btn--block" id="qaGenerateReport">
+                  📊 Generate Report
+                </button>
+              </div>
+            </article>
+
+            <!-- Critical alerts -->
+            <article class="card doc-alert-card">
+              <h2 class="card__title">Critical Alerts</h2>
+              <ul class="doc-alert-list" id="dashAlertList">
+                <!-- filled by JS -->
+              </ul>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <!-- ========== PATIENTS TAB ========== -->
+      <section class="tab-section" data-section="patients">
+        <section class="dash-row doc-main-grid patient-layout">
+          <!-- Left: list + filters -->
+          <article class="card patient-list-card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Patients</h2>
+                <p class="muted tiny">Manage all your active patients</p>
+              </div>
+              <button class="btn btn--primary btn--small" id="patientsAddBtn">
+                ＋ Add Patient
+              </button>
+            </header>
+
+            <div class="patient-filters">
+              <input
+                type="text"
+                class="input input--large"
+                placeholder="Search by name, ID or condition..."
+                id="patientsSearchInput"
+              />
+              <div class="filter-chips">
+                <button class="chip chip--active" data-filter="all">All</button>
+                <button class="chip" data-filter="high">High risk</button>
+                <button class="chip" data-filter="medium">Medium risk</button>
+                <button class="chip" data-filter="low">Low risk</button>
+              </div>
+            </div>
+
+            <div class="patient-list" id="patientsList">
+              <!-- filled by JS -->
+            </div>
+          </article>
+
+          <!-- Right: patient summary -->
+          <article class="card patient-detail-card" id="patientDetailCard">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title" id="patientDetailName">
+                  Select a patient
+                </h2>
+                <p class="muted tiny" id="patientDetailMeta">
+                  Patient summary will appear here.
+                </p>
+              </div>
+              <button class="btn btn--ghost btn--small" id="btnViewFullRecord" disabled>
+                View full record
+              </button>
+            </header>
+
+            <div class="patient-detail-body" id="patientDetailBody">
+              <!-- filled by JS -->
+              <p class="muted">Choose a patient from the list to view their summary.</p>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <!-- ========== APPOINTMENTS TAB ========== -->
+      <section class="tab-section" data-section="appointments">
+        <section class="dash-row appointments-layout">
+          <article class="card appointments-main-card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Appointments</h2>
+                <p class="muted tiny">Clinic schedule and visits</p>
+              </div>
+              <button class="btn btn--primary btn--small" id="btnNewAppointment">
+                ＋ New Appointment
+              </button>
+            </header>
+
+            <div class="appointments-controls">
+              <div class="view-toggle">
+                <button class="chip chip--active" data-view="today">Today</button>
+                <button class="chip" data-view="week">Week</button>
+                <button class="chip" data-view="month">Month</button>
+              </div>
+              <select class="input" id="appointmentsStatusFilter">
+                <option value="all">All statuses</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <table class="table appointments-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Patient</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentsTableBody">
+                <!-- filled by JS -->
+              </tbody>
+            </table>
+          </article>
+
+          <article class="card appointment-detail-card" id="appointmentDetailCard">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title" id="appointmentDetailTitle">
+                  No appointment selected
+                </h2>
+                <p class="muted tiny" id="appointmentDetailSubtitle">
+                  Click an appointment from the list to see details.
+                </p>
+              </div>
+            </header>
+            <div class="appointment-detail-body" id="appointmentDetailBody">
+              <!-- filled by JS -->
+              <p class="muted">You can start visits, mark them completed, or reschedule here.</p>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <!-- ========== PRESCRIPTIONS TAB ========== -->
+      <section class="tab-section" data-section="prescriptions">
+        <section class="dash-row prescriptions-layout">
+          <article class="card prescriptions-main-card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Prescriptions</h2>
+                <p class="muted tiny">Active and past medications</p>
+              </div>
+              <button class="btn btn--primary btn--small" id="btnNewPrescription">
+                ＋ New Prescription
+              </button>
+            </header>
+
+            <div class="prescriptions-controls">
+              <input
+                type="text"
+                class="input input--large"
+                placeholder="Search by patient or drug..."
+                id="prescriptionsSearchInput"
+              />
+              <select class="input" id="prescriptionsStatusFilter">
+                <option value="all">All statuses</option>
+                <option value="active">Active</option>
+                <option value="expired">Expired</option>
+                <option value="stopped">Stopped</option>
+              </select>
+            </div>
+
+            <table class="table prescriptions-table">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Medication</th>
+                  <th>Dosage</th>
+                  <th>Frequency</th>
+                  <th>Dates</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="prescriptionsTableBody">
+                <!-- filled by JS -->
+              </tbody>
+            </table>
+          </article>
+
+          <article class="card prescription-detail-card" id="prescriptionDetailCard">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title" id="prescriptionDetailTitle">
+                  No prescription selected
+                </h2>
+                <p class="muted tiny" id="prescriptionDetailSubtitle">
+                  Click a prescription from the table to view full instructions.
+                </p>
+              </div>
+            </header>
+            <div class="prescription-detail-body" id="prescriptionDetailBody">
+              <!-- filled by JS -->
+              <p class="muted">
+                You can show dose details, instructions and refills here.
+              </p>
+            </div>
+          </article>
+        </section>
+      </section>
+
+            <!-- ========== PROFILE TAB ========== -->
+      <section class="tab-section" data-section="profile">
+        <article class="card profile-card" id="doctorProfileCard">
+          <header class="card__head">
+            <div>
+              <h2 class="card__title">Profile</h2>
+              <p class="muted tiny">Doctor details for your project demo</p>
+            </div>
+            <button class="btn btn--ghost btn--small" id="btnEditDoctorProfile">
+              Edit Profile (demo)
+            </button>
+          </header>
+
+          <div class="profile-body" id="doctorProfileBody">
+            <!-- filled by doctor.js -->
+            <p class="muted">Loading profile...</p>
+          </div>
+        </article>
+      </section>
+
+
+      <section class="tab-section" data-section="settings">
+        <article class="card">
+          <h2 class="card__title">Settings</h2>
+          <p class="muted">Settings content can go here.</p>
+        </article>
+      </section>
+    </main>
+  </section>
+
+  <script src="doctor.js"></script>
+</body>
+</html>
+
+

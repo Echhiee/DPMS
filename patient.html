@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Patient Dashboard — Echhya’s Care</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard">
+  <section class="dashboard__layout">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="dash-sidebar">
+      <a href="index.html" class="dash-brand">
+        <svg viewBox="0 0 48 24" width="24" height="24" aria-hidden="true">
+          <path d="M2 13h7l2.5-8 3.5 12 2.5-7 2.5 3H46"
+                fill="none" stroke="#2F80ED" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="dash-brand__text">Echhya's Care</span>
+      </a>
+
+      <nav class="dash-nav">
+        <button class="dash-nav__item dash-nav__item--active" data-p-view="dashboard">
+          <span class="dash-nav__icon">🏠</span>
+          <span>Dashboard</span>
+        </button>
+        <button class="dash-nav__item" data-p-view="appointments">
+          <span class="dash-nav__icon">📅</span>
+          <span>Appointments</span>
+        </button>
+        <button class="dash-nav__item" data-p-view="symptoms">
+          <span class="dash-nav__icon">📈</span>
+          <span>Symptoms</span>
+        </button>
+        <button class="dash-nav__item" data-p-view="medications">
+          <span class="dash-nav__icon">💊</span>
+          <span>Medications</span>
+        </button>
+      </nav>
+
+      <div class="dash-sidebar__footer">
+        <button class="dash-nav__item dash-nav__item--danger" id="btnSignOutPatient">
+          <span class="dash-nav__icon">🚪</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN AREA ========== -->
+    <main class="dash-main">
+
+      <!-- ================= DASHBOARD OVERVIEW (screenshot 1) ================ -->
+      <section class="p-view" data-p-section="dashboard">
+        <header class="dash-main__header">
+          <div>
+            <h1 class="dash-main__title">Welcome back, John!</h1>
+            <p class="dash-main__subtitle">Here's your health overview for today.</p>
+          </div>
+          <div class="dash-main__context">
+            <span class="pill pill--soft">MediTrack Healthcare Platform (Community)</span>
+          </div>
+        </header>
+
+        <!-- Top stats -->
+        <section class="dash-row dash-row--stats">
+          <article class="card stat-card">
+            <div class="stat-card__label">Next Appointment</div>
+            <div class="stat-card__value">2 days</div>
+            <div class="stat-card__meta">
+              <span class="stat-card__icon">📅</span>
+              With Dr. Echhya Bhattarai
+            </div>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-card__label">Medications Due</div>
+            <div class="stat-card__value">1</div>
+            <div class="stat-card__meta">
+              <span class="stat-card__icon">💊</span>
+              Today
+            </div>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-card__label">Symptoms Logged</div>
+            <div class="stat-card__value">2</div>
+            <div class="stat-card__meta">
+              <span class="stat-card__icon">📓</span>
+              This week
+            </div>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-card__label">Health Score</div>
+            <div class="stat-card__value">85%</div>
+            <div class="stat-card__meta">
+              <span class="stat-card__icon">📈</span>
+              Stable
+            </div>
+          </article>
+        </section>
+
+        <!-- Quick actions + upcoming / medications -->
+        <section class="dash-row dash-row--grid3">
+          <article class="card quick-card">
+            <header class="card__head">
+              <h2 class="card__title">Quick Actions</h2>
+            </header>
+            <div class="quick-card__actions">
+              <button class="btn btn--primary btn--block" data-p-view-link="appointments">
+                📅 Book Appointment
+              </button>
+              <button class="btn btn--ghost btn--block" data-p-view-link="symptoms">
+                ＋ Log Symptom
+              </button>
+            </div>
+          </article>
+
+          <article class="card">
+            <header class="card__head">
+              <h2 class="card__title">Upcoming Appointments</h2>
+              <button class="link-sm" data-p-view-link="appointments">View All</button>
+            </header>
+            <ul class="list list--appointments">
+              <li class="list-item list-item--appointment">
+                <div class="list-item__main">
+                  <span class="list-item__title">Dr. Echhya Bhattarai</span>
+                  <span class="list-item__subtitle">Follow-up</span>
+                </div>
+                <div class="list-item__meta">
+                  <span class="pill pill--soft-icon">📅 2024-02-15</span>
+                  <span class="pill pill--soft-icon">⏰ 10:00 AM</span>
+                </div>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <header class="card__head">
+              <h2 class="card__title">Today's Medications</h2>
+              <button class="link-sm" data-p-view-link="medications">View All</button>
+            </header>
+            <ul class="list list--meds">
+              <li class="list-item list-item--med">
+                <div class="list-item__main">
+                  <span class="list-item__title">Metformin</span>
+                  <span class="list-item__subtitle">500mg · Twice daily</span>
+                </div>
+                <span class="badge badge--success">taken</span>
+              </li>
+              <li class="list-item list-item--med">
+                <div class="list-item__main">
+                  <span class="list-item__title">Lisinopril</span>
+                  <span class="list-item__subtitle">10mg · Once daily</span>
+                </div>
+                <span class="badge badge--warning">pending</span>
+              </li>
+            </ul>
+          </article>
+        </section>
+
+        <!-- Health progress chart -->
+        <section class="dash-row dash-row--split">
+          <article class="card chart-card">
+            <header class="card__head">
+              <h2 class="card__title">Health Progress</h2>
+              <span class="muted small">Last 6 weeks</span>
+            </header>
+
+            <!-- simple fake chart using divs; style in CSS -->
+            <div class="chart">
+              <div class="chart__grid"></div>
+              <div class="chart__legend">
+                <span class="legend-dot legend-dot--primary"></span> Blood Pressure
+                <span class="legend-dot legend-dot--secondary"></span> Heart Rate
+              </div>
+            </div>
+          </article>
+
+          <!-- you can add another card here later if you like -->
+        </section>
+      </section>
+
+      <!-- ================= APPOINTMENTS PAGE (screenshot 2) ================== -->
+      <section class="p-view is-hidden" data-p-section="appointments">
+        <header class="dash-main__header">
+          <div>
+            <button class="link-sm link-sm--back" data-p-view-link="dashboard">← Back</button>
+            <h1 class="dash-main__title">Book Appointment</h1>
+            <p class="dash-main__subtitle">
+              Search doctors by name or specialty and choose a time that works for you.
+            </p>
+          </div>
+        </header>
+
+        <section class="dash-row dash-row--column">
+          <!-- search / filters -->
+          <div class="card appt-search">
+            <input
+              type="text"
+              class="input input--large"
+              placeholder="Search doctors by name or specialty..."
+            />
+            <div class="appt-search__filters">
+              <select class="input input--select">
+                <option>All Specialties</option>
+                <option>Cardiology</option>
+                <option>Dermatology</option>
+                <option>General Practice</option>
+              </select>
+              <button class="btn btn--ghost">More Filters</button>
+            </div>
+          </div>
+
+          <!-- doctor cards -->
+          <div class="appt-grid">
+            <article class="card appt-card">
+              <div class="appt-card__main">
+                <div class="appt-avatar appt-avatar--img1"></div>
+                <div>
+                  <h2 class="appt-name">Dr. Echhya Bhattarai</h2>
+                  <p class="appt-spec">Cardiology</p>
+                  <p class="appt-meta">
+                    ⭐ 4.6 (247 reviews) · 📍 1.5 miles away
+                  </p>
+                  <p class="appt-slots">
+                    9:00 AM · 11:30 AM · 2:00 PM <span class="muted small">+1 more</span>
+                  </p>
+                </div>
+              </div>
+              <div class="appt-card__side">
+                <div class="appt-price">$205</div>
+                <button class="btn btn--primary btn--block">Book Appointment</button>
+              </div>
+            </article>
+
+            <article class="card appt-card">
+              <div class="appt-card__main">
+                <div class="appt-avatar appt-avatar--placeholder"></div>
+                <div>
+                  <h2 class="appt-name">Dr. Sanjita Shrestha</h2>
+                  <p class="appt-spec">General Practice</p>
+                  <p class="appt-meta">
+                    ⭐ 4.5 (84 reviews) · 📍 2.3 miles away
+                  </p>
+                  <p class="appt-slots">
+                    9:00 AM · 11:30 AM · 2:00 PM <span class="muted small">+1 more</span>
+                  </p>
+                </div>
+              </div>
+              <div class="appt-card__side">
+                <div class="appt-price">$174</div>
+                <button class="btn btn--primary btn--block">Book Appointment</button>
+              </div>
+            </article>
+
+            <article class="card appt-card">
+              <div class="appt-card__main">
+                <div class="appt-avatar appt-avatar--img2"></div>
+                <div>
+                  <h2 class="appt-name">Dr. Om Ghimire</h2>
+                  <p class="appt-spec">Dermatology</p>
+                  <p class="appt-meta">
+                    ⭐ 4.8 (235 reviews) · 📍 1.5 miles away
+                  </p>
+                  <p class="appt-slots">
+                    9:00 AM · 11:30 AM · 2:00 PM <span class="muted small">+1 more</span>
+                  </p>
+                </div>
+              </div>
+              <div class="appt-card__side">
+                <div class="appt-price">$170</div>
+                <button class="btn btn--primary btn--block">Book Appointment</button>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================= SYMPTOMS PAGE (screenshot 3) ===================== -->
+      <section class="p-view is-hidden" data-p-section="symptoms">
+        <header class="dash-main__header">
+          <div>
+            <button class="link-sm link-sm--back" data-p-view-link="dashboard">← Back</button>
+            <h1 class="dash-main__title">Log Symptoms</h1>
+            <p class="dash-main__subtitle">
+              Track your symptoms over time to help your care team understand your health.
+            </p>
+          </div>
+        </header>
+
+        <section class="dash-row dash-row--split">
+          <!-- left column: inputs -->
+          <div class="sym-left">
+            <article class="card">
+              <h2 class="card__title">Select Symptoms</h2>
+              <div class="sym-chip-grid">
+                <button class="sym-chip">Headache</button>
+                <button class="sym-chip">Fatigue</button>
+                <button class="sym-chip">Nausea</button>
+                <button class="sym-chip">Dizziness</button>
+                <button class="sym-chip">Chest Pain</button>
+                <button class="sym-chip">Shortness of Breath</button>
+                <button class="sym-chip">Fever</button>
+                <button class="sym-chip">Cough</button>
+                <button class="sym-chip">Back Pain</button>
+              </div>
+
+              <div class="sym-custom">
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Add custom symptom..."
+                />
+                <button class="btn btn--primary btn--icon">＋</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2 class="card__title">Severity Level</h2>
+              <div class="sym-severity">
+                <div class="sym-scale-labels">
+                  <span>1 - Mild</span>
+                  <span>5 - Moderate</span>
+                  <span>10 - Severe</span>
+                </div>
+                <input type="range" min="1" max="10" value="5" class="sym-slider" />
+              </div>
+            </article>
+
+            <article class="card">
+              <h2 class="card__title">When did this occur?</h2>
+              <div class="sym-date-time">
+                <div>
+                  <label class="label">Date</label>
+                  <input type="date" class="input" value="2025-11-30" />
+                </div>
+                <div>
+                  <label class="label">Time (optional)</label>
+                  <input type="time" class="input" />
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2 class="card__title">Additional Notes</h2>
+              <textarea
+                class="input input--textarea"
+                rows="4"
+                placeholder="Describe your symptoms in more detail, what you were doing when they occurred, any triggers, etc."
+              ></textarea>
+              <button class="btn btn--primary sym-submit">Save Symptom Log</button>
+            </article>
+          </div>
+
+          <!-- right column: recent logs + tips -->
+          <div class="sym-right">
+            <article class="card">
+              <h2 class="card__title">Recent Logs</h2>
+              <ul class="sym-log-list">
+                <li class="sym-log-item">
+                  <div class="sym-log-dot sym-log-dot--yellow"></div>
+                  <div>
+                    <strong>Headache</strong>
+                    <div class="muted small">Severity: 6/10 · 2024-02-10 at 2:30 PM</div>
+                  </div>
+                </li>
+                <li class="sym-log-item">
+                  <div class="sym-log-dot sym-log-dot--orange"></div>
+                  <div>
+                    <strong>Fatigue</strong>
+                    <div class="muted small">Severity: 4/10 · 2024-02-09 at 10:15 AM</div>
+                  </div>
+                </li>
+                <li class="sym-log-item">
+                  <div class="sym-log-dot sym-log-dot--red"></div>
+                  <div>
+                    <strong>Back Pain</strong>
+                    <div class="muted small">Severity: 7/10 · 2024-02-08 at 6:45 PM</div>
+                  </div>
+                </li>
+              </ul>
+            </article>
+
+            <article class="card sym-tips">
+              <h2 class="card__title">Logging Tips</h2>
+              <ul class="tip-list">
+                <li>Be as specific as possible when describing symptoms.</li>
+                <li>Note what you were doing when symptoms occurred.</li>
+                <li>Include any potential triggers or patterns.</li>
+                <li>Upload photos if they help illustrate your condition.</li>
+                <li>Log symptoms regularly for better tracking.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================= MEDICATIONS PAGE (screenshots 4 & 5) ============= -->
+      <section class="p-view is-hidden" data-p-section="medications">
+        <header class="dash-main__header">
+          <div>
+            <button class="link-sm link-sm--back" data-p-view-link="dashboard">← Back</button>
+            <h1 class="dash-main__title">Medication Tracker</h1>
+            <p class="dash-main__subtitle">
+              See today’s schedule, mark doses as taken or missed, and review all medications.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn--primary">＋ Add Medication</button>
+          </div>
+        </header>
+
+        <!-- top med stats -->
+        <section class="dash-row dash-row--stats">
+          <article class="card med-stat-card">
+            <div class="med-stat-label">Total Medications</div>
+            <div class="med-stat-value">4</div>
+          </article>
+          <article class="card med-stat-card">
+            <div class="med-stat-label">Due Today</div>
+            <div class="med-stat-value">1</div>
+          </article>
+          <article class="card med-stat-card">
+            <div class="med-stat-label">Taken Today</div>
+            <div class="med-stat-value">2</div>
+          </article>
+          <article class="card med-stat-card">
+            <div class="med-stat-label">Missed</div>
+            <div class="med-stat-value med-stat-value--danger">1</div>
+          </article>
+        </section>
+
+        <!-- today's schedule -->
+        <section class="dash-row dash-row--column">
+          <article class="card">
+            <header class="card__head">
+              <h2 class="card__title">Today's Schedule</h2>
+            </header>
+
+            <ul class="med-schedule-list">
+              <li class="med-schedule-item">
+                <div class="med-schedule-main">
+                  <span class="med-pill med-pill--green"></span>
+                  <div>
+                    <strong>Metformin</strong>
+                    <div class="muted small">500mg · Take with food · Next due: 8:00 PM</div>
+                  </div>
+                </div>
+                <span class="badge badge--success">taken</span>
+              </li>
+
+              <li class="med-schedule-item">
+                <div class="med-schedule-main">
+                  <span class="med-pill med-pill--yellow"></span>
+                  <div>
+                    <strong>Lisinopril</strong>
+                    <div class="muted small">10mg · Take in the morning · Next due: 9:00 AM</div>
+                  </div>
+                </div>
+                <div class="med-actions">
+                  <button class="badge badge--danger-outline">Mark Missed</button>
+                  <button class="badge badge--success-outline">Mark Taken</button>
+                  <span class="badge badge--warning">pending</span>
+                </div>
+              </li>
+
+              <li class="med-schedule-item">
+                <div class="med-schedule-main">
+                  <span class="med-pill med-pill--green"></span>
+                  <div>
+                    <strong>Atorvastatin</strong>
+                    <div class="muted small">20mg · Take at bedtime · Next due: 10:00 PM</div>
+                  </div>
+                </div>
+                <span class="badge badge--success">taken</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- all medications table -->
+          <article class="card">
+            <header class="card__head">
+              <h2 class="card__title">All Medications</h2>
+            </header>
+
+            <div class="table-wrapper">
+              <table class="med-table">
+                <thead>
+                  <tr>
+                    <th>Medication</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>Metformin</strong>
+                      <div class="muted tiny">Take with food</div>
+                    </td>
+                    <td>500mg</td>
+                    <td>Twice daily</td>
+                    <td>2024-01-15 to 2024-06-15</td>
+                    <td><span class="badge badge--success">taken</span></td>
+                    <td class="med-table__actions">
+                      <button class="link-icon">✏️</button>
+                      <button class="link-icon link-icon--danger">🗑️</button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Lisinopril</strong>
+                      <div class="muted tiny">Take in the morning</div>
+                    </td>
+                    <td>10mg</td>
+                    <td>Once daily</td>
+                    <td>2024-01-10 to 2024-12-10</td>
+                    <td><span class="badge badge--warning">pending</span></td>
+                    <td class="med-table__actions">
+                      <button class="link-icon">✏️</button>
+                      <button class="link-icon link-icon--danger">🗑️</button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Atorvastatin</strong>
+                      <div class="muted tiny">Take at bedtime</div>
+                    </td>
+                    <td>20mg</td>
+                    <td>Once daily</td>
+                    <td>2024-02-01 to 2024-08-01</td>
+                    <td><span class="badge badge--success">taken</span></td>
+                    <td class="med-table__actions">
+                      <button class="link-icon">✏️</button>
+                      <button class="link-icon link-icon--danger">🗑️</button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Omeprazole</strong>
+                      <div class="muted tiny">Take before breakfast</div>
+                    </td>
+                    <td>40mg</td>
+                    <td>Once daily</td>
+                    <td>2024-01-20 to 2024-04-20</td>
+                    <td><span class="badge badge--danger">missed</span></td>
+                    <td class="med-table__actions">
+                      <button class="link-icon">✏️</button>
+                      <button class="link-icon link-icon--danger">🗑️</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+  </section>
+
+  <script src="patient.js"></script>
+</body>
+</html>
