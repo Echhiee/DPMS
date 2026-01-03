@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Echhya's Care — Your Health, Our Priority</title>
+  <meta name="description" content="Book appointments, track symptoms and medications, and connect with healthcare providers — all in one secure platform." />
+  <link rel="stylesheet" href="style_improved.css" />
+</head>
+<body>
+  <!-- ========== TOP BAR ========== -->
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a href="#home" class="brand" aria-label="Echhya's Care — Home">
+        <svg viewBox="0 0 48 24" width="28" height="28" aria-hidden="true">
+          <path d="M2 13h7l2.5-8 3.5 12 2.5-7 2.5 3H46"
+                fill="none" stroke="#2F80ED" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand__text">Echhya's Care</span>
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <a href="#home" class="nav__link">Home</a>
+        <a href="#features" class="nav__link">Features</a>
+        <a href="#about" class="nav__link">About</a>
+        <a href="#testimonials" class="nav__link">Testimonials</a>
+        <a href="#contact" class="nav__link">Contact</a>
+      </nav>
+
+      <button id="btnTopStart" class="btn btn--primary">Get Started</button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open Menu">☰</button>
+    </div>
+  </header>
+
+  <!-- ========== HERO / LANDING ========== -->
+  <main id="home" class="hero">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <span class="badge">Trusted Healthcare Platform</span>
+        <h1 class="hero__title">Your Health, <span class="accent">Our<br/>Priority</span></h1>
+        <p class="hero__lead">
+          Experience personalized healthcare management with Echhya's Care.
+          Book appointments, track symptoms, manage medications, and connect
+          with healthcare providers — all in one secure platform.
+        </p>
+        <div class="hero__cta">
+          <button id="btnStart" class="btn btn--primary">Start Your Journey</button>
+          <a href="#features" class="btn btn--ghost">Learn More</a>
+        </div>
+        <ul class="hero__assure">
+          <li>✅ Secure & Private</li>
+          <li>👩‍⚕️ For Patients & Doctors</li>
+          <li>📅 Easy appointment booking</li>
+        </ul>
+      </div>
+
+      <aside class="hero__aside" aria-hidden="true">
+        <div class="hero-card">
+          <div class="doc-figure">
+            <div class="doc-emoji" role="img" aria-label="Doctor">👩‍⚕️</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="stats">
+      <div class="container stats__grid">
+        <div class="stat"><strong>10,000+</strong><span>Happy Patients</span></div>
+        <div class="stat"><strong>500+</strong><span>Healthcare Providers</span></div>
+        <div class="stat"><strong>50,000+</strong><span>Appointments Booked</span></div>
+        <div class="stat"><strong>99.9%</strong><span>Platform Uptime</span></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FEATURES ========== -->
+  <section id="features" class="section">
+    <div class="container">
+      <header class="section__head">
+        <h2>Everything You Need for Better Health</h2>
+        <p class="muted">Echhya's Care provides comprehensive tools to help you manage your health journey with confidence and ease.</p>
+      </header>
+
+      <div class="feature-grid">
+        <article class="feature card reveal">
+          <div class="iconbox">📅</div>
+          <h3>Easy Appointment Booking</h3>
+          <p>Book appointments with verified healthcare providers in just a few clicks.</p>
+        </article>
+
+        <article class="feature card reveal">
+          <div class="iconbox">〰️</div>
+          <h3>Symptom Tracking</h3>
+          <p>Log and monitor your symptoms with detailed analytics and insights.</p>
+        </article>
+
+        <article class="feature card reveal">
+          <div class="iconbox">💊</div>
+          <h3>Medication Management</h3>
+          <p>Never miss a dose with smart reminders and medication tracking.</p>
+        </article>
+
+        <article class="feature card reveal">
+          <div class="iconbox">💙</div>
+          <h3>Health Monitoring</h3>
+          <p>Track vital signs and health metrics with comprehensive dashboards.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section id="about" class="section section--alt">
+    <div class="container about__grid">
+      <div class="about__copy reveal">
+        <h2>About Echhya's Care</h2>
+        <p>
+          Founded with a vision to make healthcare accessible and manageable for everyone, Echhya's Care combines cutting-edge technology with compassionate care.
+        </p>
+        <p>
+          Our platform empowers patients to take control of their health while providing healthcare providers with the tools they need.
+        </p>
+      </div>
+
+      <figure class="about__media reveal">
+        <img
+          src="image/pnd.png"
+          alt="Healthcare illustration"
+          loading="lazy"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section id="testimonials" class="section">
+    <div class="container">
+      <header class="section__head">
+        <h2>What Our Users Say</h2>
+        <p class="muted">Trusted by thousands of patients and healthcare providers</p>
+      </header>
+
+      <div class="t-grid">
+        <article class="t-card card reveal">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
+          <p class="t-quote">"Echhya's Care has transformed how I manage my health. The appointment booking is so simple!"</p>
+          <div class="t-meta">
+            <div class="avatar">SJ</div>
+            <div><strong>Sarah Aryal</strong><span class="muted"> Patient</span></div>
+          </div>
+        </article>
+
+        <article class="t-card card reveal">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
+          <p class="t-quote">"The platform makes patient management efficient and streamlined."</p>
+          <div class="t-meta">
+            <div class="avatar">MC</div>
+            <div><strong>Dr.Madhav Bhattarai</strong><span class="muted"> Healthcare Provider</span></div>
+          </div>
+        </article>
+
+        <article class="t-card card reveal">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
+          <p class="t-quote">"Medication tracking and symptom logging helped me stay on top of my health goals."</p>
+          <div class="t-meta">
+            <div class="avatar">DW</div>
+            <div><strong>Punam Adhikari</strong><span class="muted"> Patient</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section id="contact" class="section section--alt">
+    <div class="container">
+      <header class="section__head">
+        <h2>Get in Touch</h2>
+        <p class="muted">Have questions? We're here to help you on your health journey.</p>
+      </header>
+
+      <div class="c-grid">
+        <article class="card c-card reveal">
+          <div class="iconbox">📞</div>
+          <h3>Phone Support</h3>
+          <p>+977 9846122443<br/><span class="muted small">Mon–Fri, 9AM–6PM</span></p>
+        </article>
+
+        <article class="card c-card reveal">
+          <div class="iconbox">✉️</div>
+          <h3>Email Support</h3>
+          <p><a href="mailto:support@echhyascare.com">support@echhyascare.com</a><br/><span class="muted small">Response within 24 hours</span></p>
+        </article>
+
+        <article class="card c-card reveal">
+          <div class="iconbox">📍</div>
+          <h3>Office Location</h3>
+          <p>Newroad, Pokhara<br/><span class="muted small">Nepal</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer">
+    <div class="container footer__grid">
+      <div class="f-col">
+        <div class="brand brand--light">
+          <svg viewBox="0 0 48 24" width="28" height="28" aria-hidden="true">
+            <path d="M2 13h7l2.5-8 3.5 12 2.5-7 2.5 3H46"
+                  fill="none" stroke="#84b6ff" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="brand__text">Echhya's Care</span>
+        </div>
+        <p class="muted">Empowering better health outcomes through technology and compassionate care.</p>
+      </div>
+      <div class="f-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#features">For Patients</a></li>
+          <li><a href="#features">For Providers</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#about">Careers</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#contact">Help Center</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer__base">
+      © 2025 Echhya's Care. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- ========== IMPROVED AUTH MODAL ========== -->
+  <dialog id="authModal" class="auth">
+    <form method="dialog" class="auth__card" id="authForm">
+      <header class="auth__head">
+        <h3>Welcome to Echhya's Care</h3>
+        <button class="auth__close" value="cancel" aria-label="Close">✕</button>
+      </header>
+
+      <!-- Tabs -->
+      <div class="seg">
+        <button type="button" class="seg__btn seg__btn--active" data-tab="signin">Sign In</button>
+        <button type="button" class="seg__btn" data-tab="signup">Sign Up</button>
+      </div>
+
+      <!-- Demo accounts row -->
+      <div class="demo-row">
+        <span class="muted small">Try Demo:</span>
+        <div class="demo-actions">
+          <button type="button" class="btn btn--demo" data-demo="patient">👤 Patient</button>
+          <button type="button" class="btn btn--demo" data-demo="doctor">👨‍⚕️ Doctor</button>
+        </div>
+      </div>
+
+      <hr class="divider" aria-hidden="true" />
+
+      <!-- Alert/Error Message -->
+      <div id="authAlert" class="auth__alert" hidden>
+        <span id="authAlertText"></span>
+        <button type="button" class="auth__alert-close" onclick="this.parentElement.hidden=true">✕</button>
+      </div>
+
+      <!-- Form body -->
+      <div class="auth__body">
+        <!-- Only visible in Sign Up mode -->
+        <div class="input-row" data-field="name" hidden>
+          <label for="name">Full Name <span class="required">*</span></label>
+          <div class="input" data-input="name">
+            <span class="i">👤</span>
+            <input type="text" id="name" placeholder="John Doe" autocomplete="name" />
+          </div>
+          <span class="input-error" data-error="name"></span>
+        </div>
+
+        <!-- Role selection (only visible in Sign Up) -->
+        <div class="input-row" data-field="role" hidden>
+          <label>I am a <span class="required">*</span></label>
+          <div class="role-select">
+            <button type="button" class="role-btn role-btn--active" data-role="patient">
+              <span class="role-icon">👤</span>
+              <span class="role-text">Patient</span>
+            </button>
+            <button type="button" class="role-btn" data-role="doctor">
+              <span class="role-icon">👨‍⚕️</span>
+              <span class="role-text">Doctor</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label for="email">Email Address <span class="required">*</span></label>
+          <div class="input" data-input="email">
+            <span class="i">✉️</span>
+            <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <span class="input-error" data-error="email"></span>
+        </div>
+
+        <div class="input-row">
+          <label for="password">Password <span class="required">*</span></label>
+          <div class="input" data-input="password">
+            <span class="i">🔒</span>
+            <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" />
+            <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+          <span class="input-error" data-error="password"></span>
+          <!-- Password strength indicator (only in signup) -->
+          <div class="password-strength" data-field="strength" hidden>
+            <div class="strength-bars">
+              <div class="strength-bar"></div>
+              <div class="strength-bar"></div>
+              <div class="strength-bar"></div>
+              <div class="strength-bar"></div>
+            </div>
+            <span class="strength-text"></span>
+          </div>
+        </div>
+
+        <button id="authSubmit" class="btn btn--primary btn--block" type="button">
+          <span class="btn-text">Sign In</span>
+          <span class="btn-loader" hidden>
+            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.25"></circle>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            Processing...
+          </span>
+        </button>
+
+        <p class="muted tiny auth__terms">
+          By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </p>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="home_improved.js"></script>
+</body>
+</html>
