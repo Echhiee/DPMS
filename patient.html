@@ -565,6 +565,47 @@
     </main>
   </section>
 
+  <!-- Edit Medication Modal -->
+  <div id="editMedicationModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Medication</h2>
+        <button class="modal-close" onclick="document.getElementById('editMedicationModal').style.display='none'">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editMedId" />
+        <div style="margin-bottom: 1rem;">
+          <label class="label">Medication Name *</label>
+          <input type="text" id="editMedName" class="input" required />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="label">Dosage *</label>
+          <input type="text" id="editMedDosage" class="input" placeholder="e.g., 500mg" required />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="label">Frequency *</label>
+          <input type="text" id="editMedFrequency" class="input" placeholder="e.g., Twice daily" required />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="label">Start Date</label>
+          <input type="date" id="editMedStartDate" class="input" />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="label">End Date</label>
+          <input type="date" id="editMedEndDate" class="input" />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="label">Instructions</label>
+          <textarea id="editMedInstructions" class="input input--textarea" rows="3" placeholder="e.g., Take with food"></textarea>
+        </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+          <button class="btn btn--ghost" onclick="document.getElementById('editMedicationModal').style.display='none'">Cancel</button>
+          <button class="btn btn--primary" id="saveMedicationBtn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="patient.js"></script>
 </body>
 </html>
