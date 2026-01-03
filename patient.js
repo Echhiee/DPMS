@@ -362,47 +362,42 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Render All Medications Table with status update buttons
+    // Render All Medications Table with status update buttons (anytime, not date-restricted)
     if (medTableBody) {
       medTableBody.innerHTML = "";
       
-      // Get today's date to find today's doses
-      const today = data.today || new Date().toISOString().split('T')[0];
-      
       data.allMedications.forEach((med) => {
-        // Find today's dose for this medication
+        // Find today's dose for this medication (if exists)
         const todayDose = data.todaySchedule.find(d => d.medicationId === med.id);
         
-        // Build status buttons based on today's dose status
+        // Always show status buttons - allow updates anytime
         let statusButtons = '';
-        if (todayDose) {
-          const doseStatus = todayDose.doseStatus;
-          if (doseStatus === "pending") {
-            statusButtons = `
-              <div class="med-actions">
-                <button class="tag tag--success" data-med-dose="${todayDose.doseId}" data-med-status="taken">✓ Taken</button>
-                <button class="tag tag--danger" data-med-dose="${todayDose.doseId}" data-med-status="missed">✗ Missed</button>
-              </div>
-            `;
-          } else if (doseStatus === "taken") {
-            statusButtons = `
-              <div class="med-actions">
-                <span class="badge badge--success">✓ Taken</span>
-                <button class="tag tag--danger" data-med-dose="${todayDose.doseId}" data-med-status="missed">✗ Missed</button>
-                <button class="tag tag--secondary" data-med-dose="${todayDose.doseId}" data-med-status="pending">↺</button>
-              </div>
-            `;
-          } else if (doseStatus === "missed") {
-            statusButtons = `
-              <div class="med-actions">
-                <button class="tag tag--success" data-med-dose="${todayDose.doseId}" data-med-status="taken">✓ Taken</button>
-                <span class="badge badge--danger">✗ Missed</span>
-                <button class="tag tag--secondary" data-med-dose="${todayDose.doseId}" data-med-status="pending">↺</button>
-              </div>
-            `;
-          }
-        } else {
-          statusButtons = '<span class="muted small">No dose today</span>';
+        let doseId = todayDose ? todayDose.doseId : null;
+        let currentStatus = todayDose ? todayDose.doseStatus : 'pending';
+        
+        if (currentStatus === "pending" || !todayDose) {
+          statusButtons = `
+            <div class="med-actions">
+              <button class="tag tag--success" data-med-id="${med.id}" data-med-dose="${doseId || 0}" data-med-status="taken">✓ Taken</button>
+              <button class="tag tag--danger" data-med-id="${med.id}" data-med-dose="${doseId || 0}" data-med-status="missed">✗ Missed</button>
+            </div>
+          `;
+        } else if (currentStatus === "taken") {
+          statusButtons = `
+            <div class="med-actions">
+              <span class="badge badge--success">✓ Taken</span>
+              <button class="tag tag--danger" data-med-id="${med.id}" data-med-dose="${doseId}" data-med-status="missed">✗ Missed</button>
+              <button class="tag tag--secondary" data-med-id="${med.id}" data-med-dose="${doseId}" data-med-status="pending">↺ Reset</button>
+            </div>
+          `;
+        } else if (currentStatus === "missed") {
+          statusButtons = `
+            <div class="med-actions">
+              <button class="tag tag--success" data-med-id="${med.id}" data-med-dose="${doseId}" data-med-status="taken">✓ Taken</button>
+              <span class="badge badge--danger">✗ Missed</span>
+              <button class="tag tag--secondary" data-med-id="${med.id}" data-med-dose="${doseId}" data-med-status="pending">↺ Reset</button>
+            </div>
+          `;
         }
         
         medTableBody.innerHTML += `
@@ -427,20 +422,32 @@ document.addEventListener("DOMContentLoaded", () => {
       medTableBody.querySelectorAll("[data-med-dose]").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const doseId = Number(btn.getAttribute("data-med-dose"));
+          const medId = Number(btn.getAttribute("data-med-id"));
           const status = btn.getAttribute("data-med-status");
           
-          console.log(`Updating dose ${doseId} to status: ${status} from table`);
+          console.log(`Updating medication ${medId}, dose ${doseId} to status: ${status}`);
           
           btn.disabled = true;
           const originalText = btn.textContent;
           btn.textContent = "...";
 
           try {
-            await apiPOST("api/patient_medication_update.php", {
-              dose_id: doseId,
-              status: status,
-            });
-            console.log("Medication status updated successfully from table");
+            // If no dose exists (doseId is 0), create one for today
+            if (doseId === 0) {
+              const today = new Date().toISOString().split('T')[0];
+              await apiPOST("api/patient_medication_create_dose.php", {
+                medication_id: medId,
+                dose_date: today,
+                dose_status: status,
+              });
+            } else {
+              // Update existing dose
+              await apiPOST("api/patient_medication_update.php", {
+                dose_id: doseId,
+                status: status,
+              });
+            }
+            console.log("Medication status updated successfully");
             await loadMedications();
             await loadDashboard();
           } catch (e) {
