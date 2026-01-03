@@ -1,4 +1,4 @@
-// doctor.js (DB/API) - REPLACE YOUR FULL FILE WITH THIS
+// doctor.js (DB/API) - FULL FINAL WITH PROFILE EDIT + DYNAMIC DOCTOR NAME (FIXED)
 document.addEventListener("DOMContentLoaded", () => {
   console.log("doctor.js (DB/API)");
 
@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return json.data;
   }
 
+  const esc = (s) =>
+    String(s ?? "").replace(/[&<>"']/g, (m) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+
   // ---------- Auth guard ----------
   async function requireDoctor() {
     const me = await apiGET("api/me.php");
@@ -30,6 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return null;
     }
     return me;
+  }
+
+  // ---------- Greeting name ----------
+  async function loadDoctorGreeting() {
+    const me = await apiGET("api/me.php");
+    const nameEl = document.getElementById("docName");
+    if (nameEl) nameEl.textContent = me.name || me.full_name || "Doctor";
   }
 
   // ---------- Sign out ----------
@@ -52,6 +64,11 @@ document.addEventListener("DOMContentLoaded", () => {
       tabSections.forEach((sec) => {
         sec.classList.toggle("tab-section--active", sec.dataset.section === section);
       });
+
+      // load profile when opening profile tab
+      if (section === "profile") {
+        loadDoctorProfile().catch((e) => alert(e.message));
+      }
     });
   });
 
@@ -82,17 +99,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const prescriptionDetailSubtitle = document.getElementById("prescriptionDetailSubtitle");
   const prescriptionDetailBody = document.getElementById("prescriptionDetailBody");
 
+  // ---------- Profile tab ----------
+  const doctorProfileBody = document.getElementById("doctorProfileBody");
+  const btnEditDoctorProfile = document.getElementById("btnEditDoctorProfile");
+
   // ---------- State ----------
   let patients = [];
   let appointments = [];
   let prescriptions = [];
   let selectedRx = null;
   let selectedAppt = null;
-
-  const esc = (s) =>
-    String(s ?? "").replace(/[&<>"']/g, (m) => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[m]));
 
   // =========================================================
   // DASHBOARD LOAD
@@ -309,93 +325,99 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPrescriptionsTab().catch((e) => alert(e.message))
   );
 
-  // ---------- Popup form for new prescription ----------
-  function openPrescriptionForm() {
-    const overlay = document.createElement("div");
-    overlay.style.position = "fixed";
-    overlay.style.inset = "0";
-    overlay.style.background = "rgba(0,0,0,.45)";
-    overlay.style.display = "grid";
-    overlay.style.placeItems = "center";
-    overlay.style.zIndex = "9999";
+  // =========================================================
+  // PROFILE TAB (VIEW + EDIT + SAVE) ✅ FIXED
+  // =========================================================
+  async function loadDoctorProfile() {
+    if (!doctorProfileBody) return;
 
-    overlay.innerHTML = `
-      <div style="width:min(720px, 92vw); background:#fff; border-radius:14px; padding:16px;">
-        <h3 style="margin:0 0 10px;">New Prescription</h3>
-        <div style="display:grid; gap:10px;">
-          <label>Patient
-            <select id="rxPatient" class="input" style="width:100%"></select>
-          </label>
-          <label>Medication
-            <input id="rxName" class="input" placeholder="e.g., Paracetamol" />
-          </label>
-          <div style="display:grid; gap:10px; grid-template-columns: 1fr 1fr;">
-            <label>Dosage
-              <input id="rxDosage" class="input" placeholder="e.g., 500mg" />
-            </label>
-            <label>Frequency
-              <input id="rxFreq" class="input" placeholder="e.g., 2 times/day" />
-            </label>
-          </div>
-          <div style="display:grid; gap:10px; grid-template-columns: 1fr 1fr;">
-            <label>Start Date
-              <input id="rxStart" class="input" type="date" />
-            </label>
-            <label>End Date
-              <input id="rxEnd" class="input" type="date" />
-            </label>
-          </div>
-          <label>Instructions
-            <textarea id="rxInst" class="input" rows="3" placeholder="After meal, drink water..."></textarea>
-          </label>
+    const p = await apiGET("api/doctor_profile.php");
 
-          <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">
-            <button id="rxCancel" class="btn">Cancel</button>
-            <button id="rxSave" class="btn btn--primary">Save</button>
-          </div>
+    doctorProfileBody.innerHTML = `
+      <div class="profile-grid">
+        <div><strong>Name:</strong> ${esc(p.name || "—")}</div>
+        <div><strong>Email:</strong> ${esc(p.email || "—")}</div>
+        <div><strong>Speciality:</strong> ${esc(p.speciality || "—")}</div>
+        <div><strong>Clinic:</strong> ${esc(p.clinic || "—")}</div>
+        <div><strong>Experience:</strong> ${esc(p.experienceYears ?? "—")} years</div>
+        <div><strong>Phone:</strong> ${esc(p.phone || "—")}</div>
+        <div><strong>Languages:</strong> ${esc(p.languages || "—")}</div>
+        <div><strong>Visiting Hours:</strong> ${esc(p.visitingHours || "—")}</div>
+        <div style="grid-column:1/-1">
+          <strong>About:</strong>
+          <p class="muted">${esc(p.about || "—")}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  async function enableDoctorProfileEdit() {
+    if (!doctorProfileBody) return;
+
+    const p = await apiGET("api/doctor_profile.php");
+
+    doctorProfileBody.innerHTML = `
+      <div class="profile-form">
+        <label>Speciality
+          <input class="input" id="pfSpeciality" value="${esc(p.speciality || "")}">
+        </label>
+
+        <label>Clinic
+          <input class="input" id="pfClinic" value="${esc(p.clinic || "")}">
+        </label>
+
+        <label>Experience (years)
+          <input class="input" type="number" id="pfExp" value="${p.experienceYears ?? 0}">
+        </label>
+
+        <label>Phone
+          <input class="input" id="pfPhone" value="${esc(p.phone || "")}">
+        </label>
+
+        <label>Languages
+          <input class="input" id="pfLang" value="${esc(p.languages || "")}">
+        </label>
+
+        <label>Visiting Hours
+          <input class="input" id="pfVisit" value="${esc(p.visitingHours || "")}">
+        </label>
+
+        <label>About
+          <textarea class="input" rows="4" id="pfAbout">${esc(p.about || "")}</textarea>
+        </label>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+          <button class="btn" id="btnCancelProfileEdit">Cancel</button>
+          <button class="btn btn--primary" id="btnSaveProfile">Save Profile</button>
         </div>
       </div>
     `;
 
-    document.body.appendChild(overlay);
-
-    // fill patients dropdown
-    const sel = overlay.querySelector("#rxPatient");
-    patients.forEach((p) => {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = p.name;
-      sel.appendChild(opt);
+    document.getElementById("btnCancelProfileEdit")?.addEventListener("click", () => {
+      loadDoctorProfile().catch((e) => alert(e.message));
     });
 
-    overlay.querySelector("#rxCancel")?.addEventListener("click", () => overlay.remove());
+    document.getElementById("btnSaveProfile")?.addEventListener("click", async () => {
+      const payload = {
+        speciality: document.getElementById("pfSpeciality")?.value || "",
+        clinic: document.getElementById("pfClinic")?.value || "",
+        experience_years: Number(document.getElementById("pfExp")?.value || 0),
+        phone: document.getElementById("pfPhone")?.value || "",
+        languages: document.getElementById("pfLang")?.value || "",
+        visiting_hours: document.getElementById("pfVisit")?.value || "",
+        about: document.getElementById("pfAbout")?.value || "",
+      };
 
-    overlay.querySelector("#rxSave")?.addEventListener("click", async () => {
-      try {
-        const payload = {
-          patient_id: Number(sel.value),
-          name: overlay.querySelector("#rxName").value.trim(),
-          dosage: overlay.querySelector("#rxDosage").value.trim(),
-          frequency: overlay.querySelector("#rxFreq").value.trim(),
-          start_date: overlay.querySelector("#rxStart").value,
-          end_date: overlay.querySelector("#rxEnd").value,
-          instructions: overlay.querySelector("#rxInst").value.trim(),
-        };
-        if (!payload.patient_id || !payload.name) return alert("Select patient + medication name");
-
-        await apiPOST("api/doctor_prescription_create.php", payload);
-        overlay.remove();
-        await loadPrescriptionsTab();
-        await loadDashboard();
-      } catch (e) {
-        alert(e.message);
-      }
+      await apiPOST("api/doctor_profile_update.php", payload);
+      alert("Profile updated ✅");
+      await loadDoctorProfile();
     });
   }
 
-  btnNewPrescription?.addEventListener("click", () => {
-    if (!patients.length) return alert("No patients loaded yet.");
-    openPrescriptionForm();
+  btnEditDoctorProfile?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    enableDoctorProfileEdit().catch((err) => alert(err.message));
   });
 
   // =========================================================
@@ -404,9 +426,11 @@ document.addEventListener("DOMContentLoaded", () => {
   (async () => {
     try {
       await requireDoctor();
+      await loadDoctorGreeting();   // ✅ greeting changes per doctor
       await loadDashboard();
       await loadAppointmentsTab();
       await loadPrescriptionsTab();
+      // Profile loads when profile tab is opened
     } catch (e) {
       alert(e.message);
     }

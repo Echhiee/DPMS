@@ -501,3 +501,4 @@ document.addEventListener("DOMContentLoaded", () => {
   doctorSearchInput?.addEventListener("input", () => loadDoctors().catch((e) => alert(e.message)));
   specialtySelect?.addEventListener("change", () => loadDoctors().catch((e) => alert(e.message)));
 });
+
