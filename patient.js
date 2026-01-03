@@ -265,35 +265,60 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   async function loadMedications() {
-    const data = await apiGET("api/patient_medications.php");
+    try {
+      const data = await apiGET("api/patient_medications.php");
+      console.log("Loaded medications:", data);
 
-    if (medStatsValues.length >= 4) {
-      const total = data.allMedications.length;
-      const dueToday = data.todaySchedule.filter(d => d.doseStatus === "pending").length;
-      const taken = data.todaySchedule.filter(d => d.doseStatus === "taken").length;
-      const missed = data.todaySchedule.filter(d => d.doseStatus === "missed").length;
-      medStatsValues[0].textContent = total;
-      medStatsValues[1].textContent = dueToday;
-      medStatsValues[2].textContent = taken;
-      medStatsValues[3].textContent = missed;
-    }
+      if (medStatsValues.length >= 4) {
+        const total = data.allMedications.length;
+        const dueToday = data.todaySchedule.filter(d => d.doseStatus === "pending").length;
+        const taken = data.todaySchedule.filter(d => d.doseStatus === "taken").length;
+        const missed = data.todaySchedule.filter(d => d.doseStatus === "missed").length;
+        medStatsValues[0].textContent = total;
+        medStatsValues[1].textContent = dueToday;
+        medStatsValues[2].textContent = taken;
+        medStatsValues[3].textContent = missed;
+      }
 
     if (medScheduleList) {
       medScheduleList.innerHTML = "";
 
       data.todaySchedule.forEach((d) => {
+        // Determine pill color and action buttons based on status
+        let pillClass = "med-pill--yellow";
+        if (d.doseStatus === "taken") pillClass = "med-pill--green";
+        if (d.doseStatus === "missed") pillClass = "med-pill--red";
+
+        // Build action buttons based on current status
+        let actionButtons = "";
+        if (d.doseStatus === "pending") {
+          actionButtons = `
+            <button class="tag tag--success" data-dose="${d.doseId}" data-status="taken">✓ Taken</button>
+            <button class="tag tag--danger" data-dose="${d.doseId}" data-status="missed">✗ Missed</button>
+          `;
+        } else if (d.doseStatus === "taken") {
+          actionButtons = `
+            <button class="tag tag--danger" data-dose="${d.doseId}" data-status="missed">✗ Missed</button>
+            <button class="tag tag--secondary" data-dose="${d.doseId}" data-status="pending">↺ Reset</button>
+          `;
+        } else if (d.doseStatus === "missed") {
+          actionButtons = `
+            <button class="tag tag--success" data-dose="${d.doseId}" data-status="taken">✓ Taken</button>
+            <button class="tag tag--secondary" data-dose="${d.doseId}" data-status="pending">↺ Reset</button>
+          `;
+        }
+
         medScheduleList.innerHTML += `
           <li class="med-schedule-item">
             <div class="med-schedule-main">
-              <span class="med-pill ${d.doseStatus === "taken" ? "med-pill--green" : "med-pill--yellow"}"></span>
+              <span class="med-pill ${pillClass}"></span>
               <div>
                 <div><strong>${esc(d.name)}</strong></div>
                 <div class="muted small">${esc(d.dosage)} · ${esc(d.frequency)} ${d.doseTime ? "· " + esc(d.doseTime) : ""}</div>
               </div>
             </div>
             <div class="med-actions">
-              <button class="tag tag--success" data-dose="${d.doseId}" data-status="taken">Taken</button>
-              <button class="tag tag--danger" data-dose="${d.doseId}" data-status="missed">Missed</button>
+              ${actionButtons}
             </div>
           </li>
         `;
@@ -303,22 +328,43 @@ document.addEventListener("DOMContentLoaded", () => {
         medScheduleList.innerHTML = `<li class="muted small">No doses scheduled today.</li>`;
       }
 
+      // Attach event listeners to all action buttons
       medScheduleList.querySelectorAll("[data-dose]").forEach((btn) => {
         btn.addEventListener("click", async () => {
+          const doseId = Number(btn.getAttribute("data-dose"));
+          const status = btn.getAttribute("data-status");
+          
+          console.log(`Updating dose ${doseId} to status: ${status}`);
+          
+          // Disable button to prevent double-clicks
+          btn.disabled = true;
+          const originalText = btn.textContent;
+          btn.textContent = "...";
+
           try {
             await apiPOST("api/patient_medication_update.php", {
-              dose_id: Number(btn.getAttribute("data-dose")),
-              status: btn.getAttribute("data-status"),
+              dose_id: doseId,
+              status: status,
             });
+            console.log("Medication updated successfully");
+            // Reload to show updated status
             await loadMedications();
             await loadDashboard();
           } catch (e) {
-            alert(e.message);
+            console.error("Error updating medication:", e);
+            alert("Error updating medication: " + e.message);
+            // Re-enable button on error
+            btn.disabled = false;
+            btn.textContent = originalText;
           }
         });
       });
     }
+  } catch (e) {
+    console.error("Error loading medications:", e);
+    alert("Error loading medications: " + e.message);
   }
+}
 
   async function loadPrescriptionsOptional() {
     // Only works if you create a place to show it (optional)

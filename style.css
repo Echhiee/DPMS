@@ -904,6 +904,16 @@ img{max-width:100%;display:block;border-radius:14px}
   color: #fff;
 }
 
+.tag--secondary {
+  background: #94a3b8;
+  color: #fff;
+}
+
+.tag:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* badges reuse your dashboard style names */
 .badge--success {
   background: #dcfce7;
@@ -1706,6 +1716,10 @@ body.dashboard .med-pill--green {
 
 body.dashboard .med-pill--yellow {
   background: #fef3c7;
+}
+
+body.dashboard .med-pill--red {
+  background: #fecaca;
 }
 
 body.dashboard .med-actions {
