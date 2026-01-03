@@ -362,16 +362,48 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Render All Medications Table
+    // Render All Medications Table with status update buttons
     if (medTableBody) {
       medTableBody.innerHTML = "";
       
+      // Get today's date to find today's doses
+      const today = data.today || new Date().toISOString().split('T')[0];
+      
       data.allMedications.forEach((med) => {
-        const statusClass = 
-          med.status === "active" ? "badge--success" :
-          med.status === "stopped" ? "badge--danger" : "badge--warning";
+        // Find today's dose for this medication
+        const todayDose = data.todaySchedule.find(d => d.medicationId === med.id);
         
-        const statusLabel = med.status || "active";
+        // Build status buttons based on today's dose status
+        let statusButtons = '';
+        if (todayDose) {
+          const doseStatus = todayDose.doseStatus;
+          if (doseStatus === "pending") {
+            statusButtons = `
+              <div class="med-actions">
+                <button class="tag tag--success" data-med-dose="${todayDose.doseId}" data-med-status="taken">✓ Taken</button>
+                <button class="tag tag--danger" data-med-dose="${todayDose.doseId}" data-med-status="missed">✗ Missed</button>
+              </div>
+            `;
+          } else if (doseStatus === "taken") {
+            statusButtons = `
+              <div class="med-actions">
+                <span class="badge badge--success">✓ Taken</span>
+                <button class="tag tag--danger" data-med-dose="${todayDose.doseId}" data-med-status="missed">✗ Missed</button>
+                <button class="tag tag--secondary" data-med-dose="${todayDose.doseId}" data-med-status="pending">↺</button>
+              </div>
+            `;
+          } else if (doseStatus === "missed") {
+            statusButtons = `
+              <div class="med-actions">
+                <button class="tag tag--success" data-med-dose="${todayDose.doseId}" data-med-status="taken">✓ Taken</button>
+                <span class="badge badge--danger">✗ Missed</span>
+                <button class="tag tag--secondary" data-med-dose="${todayDose.doseId}" data-med-status="pending">↺</button>
+              </div>
+            `;
+          }
+        } else {
+          statusButtons = '<span class="muted small">No dose today</span>';
+        }
         
         medTableBody.innerHTML += `
           <tr>
@@ -382,42 +414,40 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${esc(med.dosage)}</td>
             <td>${esc(med.frequency)}</td>
             <td>${esc(med.startDate || '—')} to ${esc(med.endDate || '—')}</td>
-            <td><span class="badge ${statusClass}">${esc(statusLabel)}</span></td>
-            <td class="med-table__actions">
-              <button class="link-icon" data-edit-med="${med.id}">✏️</button>
-              <button class="link-icon link-icon--danger" data-delete-med="${med.id}">🗑️</button>
-            </td>
+            <td>${statusButtons}</td>
           </tr>
         `;
       });
 
       if (!data.allMedications.length) {
-        medTableBody.innerHTML = `<tr><td colspan="6" class="muted small" style="text-align:center;">No medications found.</td></tr>`;
+        medTableBody.innerHTML = `<tr><td colspan="5" class="muted small" style="text-align:center;">No medications found.</td></tr>`;
       }
 
-      // Attach edit button event listeners
-      medTableBody.querySelectorAll("[data-edit-med]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const medId = Number(btn.getAttribute("data-edit-med"));
-          openEditModal(data.allMedications.find(m => m.id === medId));
-        });
-      });
-
-      // Attach delete button event listeners
-      medTableBody.querySelectorAll("[data-delete-med]").forEach((btn) => {
+      // Attach event listeners for status update buttons in the table
+      medTableBody.querySelectorAll("[data-med-dose]").forEach((btn) => {
         btn.addEventListener("click", async () => {
-          const medId = Number(btn.getAttribute("data-delete-med"));
-          const med = data.allMedications.find(m => m.id === medId);
+          const doseId = Number(btn.getAttribute("data-med-dose"));
+          const status = btn.getAttribute("data-med-status");
           
-          if (confirm(`Are you sure you want to delete "${med.name}"? This will also delete all associated dose records.`)) {
-            try {
-              await apiPOST("api/patient_medication_delete.php", { medication_id: medId });
-              alert("Medication deleted successfully");
-              await loadMedications();
-              await loadDashboard();
-            } catch (e) {
-              alert("Error deleting medication: " + e.message);
-            }
+          console.log(`Updating dose ${doseId} to status: ${status} from table`);
+          
+          btn.disabled = true;
+          const originalText = btn.textContent;
+          btn.textContent = "...";
+
+          try {
+            await apiPOST("api/patient_medication_update.php", {
+              dose_id: doseId,
+              status: status,
+            });
+            console.log("Medication status updated successfully from table");
+            await loadMedications();
+            await loadDashboard();
+          } catch (e) {
+            console.error("Error updating medication:", e);
+            alert("Error updating medication: " + e.message);
+            btn.disabled = false;
+            btn.textContent = originalText;
           }
         });
       });
@@ -427,53 +457,6 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Error loading medications: " + e.message);
   }
 }
-
-  // Open edit modal with medication data
-  function openEditModal(med) {
-    const modal = document.getElementById("editMedicationModal");
-    document.getElementById("editMedId").value = med.id;
-    document.getElementById("editMedName").value = med.name;
-    document.getElementById("editMedDosage").value = med.dosage;
-    document.getElementById("editMedFrequency").value = med.frequency;
-    document.getElementById("editMedStartDate").value = med.startDate || '';
-    document.getElementById("editMedEndDate").value = med.endDate || '';
-    document.getElementById("editMedInstructions").value = med.instructions || '';
-    modal.style.display = "flex";
-  }
-
-  // Save medication button handler
-  document.getElementById("saveMedicationBtn")?.addEventListener("click", async () => {
-    const medId = Number(document.getElementById("editMedId").value);
-    const name = document.getElementById("editMedName").value.trim();
-    const dosage = document.getElementById("editMedDosage").value.trim();
-    const frequency = document.getElementById("editMedFrequency").value.trim();
-    const startDate = document.getElementById("editMedStartDate").value;
-    const endDate = document.getElementById("editMedEndDate").value;
-    const instructions = document.getElementById("editMedInstructions").value.trim();
-
-    if (!name || !dosage || !frequency) {
-      alert("Please fill in all required fields (Name, Dosage, Frequency)");
-      return;
-    }
-
-    try {
-      await apiPOST("api/patient_medication_edit.php", {
-        medication_id: medId,
-        name,
-        dosage,
-        frequency,
-        start_date: startDate,
-        end_date: endDate,
-        instructions
-      });
-      alert("Medication updated successfully");
-      document.getElementById("editMedicationModal").style.display = "none";
-      await loadMedications();
-      await loadDashboard();
-    } catch (e) {
-      alert("Error updating medication: " + e.message);
-    }
-  });
 
   async function loadPrescriptionsOptional() {
     // Only works if you create a place to show it (optional)

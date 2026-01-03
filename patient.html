@@ -492,70 +492,11 @@
                     <th>Dosage</th>
                     <th>Frequency</th>
                     <th>Duration</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Mark Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <strong>Metformin</strong>
-                      <div class="muted tiny">Take with food</div>
-                    </td>
-                    <td>500mg</td>
-                    <td>Twice daily</td>
-                    <td>2024-01-15 to 2024-06-15</td>
-                    <td><span class="badge badge--success">taken</span></td>
-                    <td class="med-table__actions">
-                      <button class="link-icon">✏️</button>
-                      <button class="link-icon link-icon--danger">🗑️</button>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <strong>Lisinopril</strong>
-                      <div class="muted tiny">Take in the morning</div>
-                    </td>
-                    <td>10mg</td>
-                    <td>Once daily</td>
-                    <td>2024-01-10 to 2024-12-10</td>
-                    <td><span class="badge badge--warning">pending</span></td>
-                    <td class="med-table__actions">
-                      <button class="link-icon">✏️</button>
-                      <button class="link-icon link-icon--danger">🗑️</button>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <strong>Atorvastatin</strong>
-                      <div class="muted tiny">Take at bedtime</div>
-                    </td>
-                    <td>20mg</td>
-                    <td>Once daily</td>
-                    <td>2024-02-01 to 2024-08-01</td>
-                    <td><span class="badge badge--success">taken</span></td>
-                    <td class="med-table__actions">
-                      <button class="link-icon">✏️</button>
-                      <button class="link-icon link-icon--danger">🗑️</button>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <strong>Omeprazole</strong>
-                      <div class="muted tiny">Take before breakfast</div>
-                    </td>
-                    <td>40mg</td>
-                    <td>Once daily</td>
-                    <td>2024-01-20 to 2024-04-20</td>
-                    <td><span class="badge badge--danger">missed</span></td>
-                    <td class="med-table__actions">
-                      <button class="link-icon">✏️</button>
-                      <button class="link-icon link-icon--danger">🗑️</button>
-                    </td>
-                  </tr>
+                  <!-- This will be populated by JavaScript -->
                 </tbody>
               </table>
             </div>
@@ -564,47 +505,6 @@
       </section>
     </main>
   </section>
-
-  <!-- Edit Medication Modal -->
-  <div id="editMedicationModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Edit Medication</h2>
-        <button class="modal-close" onclick="document.getElementById('editMedicationModal').style.display='none'">×</button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="editMedId" />
-        <div style="margin-bottom: 1rem;">
-          <label class="label">Medication Name *</label>
-          <input type="text" id="editMedName" class="input" required />
-        </div>
-        <div style="margin-bottom: 1rem;">
-          <label class="label">Dosage *</label>
-          <input type="text" id="editMedDosage" class="input" placeholder="e.g., 500mg" required />
-        </div>
-        <div style="margin-bottom: 1rem;">
-          <label class="label">Frequency *</label>
-          <input type="text" id="editMedFrequency" class="input" placeholder="e.g., Twice daily" required />
-        </div>
-        <div style="margin-bottom: 1rem;">
-          <label class="label">Start Date</label>
-          <input type="date" id="editMedStartDate" class="input" />
-        </div>
-        <div style="margin-bottom: 1rem;">
-          <label class="label">End Date</label>
-          <input type="date" id="editMedEndDate" class="input" />
-        </div>
-        <div style="margin-bottom: 1rem;">
-          <label class="label">Instructions</label>
-          <textarea id="editMedInstructions" class="input input--textarea" rows="3" placeholder="e.g., Take with food"></textarea>
-        </div>
-        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-          <button class="btn btn--ghost" onclick="document.getElementById('editMedicationModal').style.display='none'">Cancel</button>
-          <button class="btn btn--primary" id="saveMedicationBtn">Save Changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <script src="patient.js"></script>
 </body>
