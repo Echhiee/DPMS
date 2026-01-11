@@ -37,3 +37,6 @@ function require_role(string $role): array {
   if (($u['role'] ?? '') !== $role) json_fail('Forbidden', 403);
   return $u;
 }
+function json_body(): array {
+  return read_json();
+}

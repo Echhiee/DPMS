@@ -5,6 +5,7 @@ require_once __DIR__ . "/db.php";
 require_login();              // must be logged in
 require_role("doctor");       // must be doctor
 
+$pdo = db();
 $user_id = $_SESSION["user"]["id"];
 
 $sql = "
@@ -13,9 +14,9 @@ SELECT
   u.full_name AS name,
   u.email,
   d.speciality,
+  d.reg_no AS regNo,
   d.clinic,
   d.experience_years AS experienceYears,
-  d.phone,
   d.languages,
   d.visiting_hours AS visitingHours,
   d.about

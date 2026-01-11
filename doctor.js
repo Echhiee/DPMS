@@ -338,9 +338,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <div><strong>Name:</strong> ${esc(p.name || "—")}</div>
         <div><strong>Email:</strong> ${esc(p.email || "—")}</div>
         <div><strong>Speciality:</strong> ${esc(p.speciality || "—")}</div>
+        <div><strong>Registration No:</strong> ${esc(p.regNo || "—")}</div>
         <div><strong>Clinic:</strong> ${esc(p.clinic || "—")}</div>
         <div><strong>Experience:</strong> ${esc(p.experienceYears ?? "—")} years</div>
-        <div><strong>Phone:</strong> ${esc(p.phone || "—")}</div>
         <div><strong>Languages:</strong> ${esc(p.languages || "—")}</div>
         <div><strong>Visiting Hours:</strong> ${esc(p.visitingHours || "—")}</div>
         <div style="grid-column:1/-1">
@@ -362,16 +362,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <input class="input" id="pfSpeciality" value="${esc(p.speciality || "")}">
         </label>
 
+        <label>Registration No
+          <input class="input" id="pfRegNo" value="${esc(p.regNo || "")}">
+        </label>
+
         <label>Clinic
           <input class="input" id="pfClinic" value="${esc(p.clinic || "")}">
         </label>
 
         <label>Experience (years)
           <input class="input" type="number" id="pfExp" value="${p.experienceYears ?? 0}">
-        </label>
-
-        <label>Phone
-          <input class="input" id="pfPhone" value="${esc(p.phone || "")}">
         </label>
 
         <label>Languages
@@ -400,9 +400,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnSaveProfile")?.addEventListener("click", async () => {
       const payload = {
         speciality: document.getElementById("pfSpeciality")?.value || "",
+        reg_no: document.getElementById("pfRegNo")?.value || "",
         clinic: document.getElementById("pfClinic")?.value || "",
         experience_years: Number(document.getElementById("pfExp")?.value || 0),
-        phone: document.getElementById("pfPhone")?.value || "",
         languages: document.getElementById("pfLang")?.value || "",
         visiting_hours: document.getElementById("pfVisit")?.value || "",
         about: document.getElementById("pfAbout")?.value || "",
