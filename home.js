@@ -62,8 +62,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // ----------------------------
   async function apiGET(url) {
     const res = await fetch(url, { credentials: "include" });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON response from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -74,8 +81,15 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload || {}),
     });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON response from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -113,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const authSubmit = document.getElementById("authSubmit");
 
   let mode = "signin"; // signin | signup
-  let signupRole = "patient"; // patient | doctor
+  let signupRole = "patient"; // patient | doctor | admin
 
   function setMode(nextMode) {
     mode = nextMode;
@@ -131,20 +145,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setMode("signin");
 
-  // Role select using the "Patient / Doctor" demo buttons (no UI change)
+  // Role select using demo buttons
   document.querySelectorAll("[data-demo]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const demo = btn.getAttribute("data-demo");
       if (demo === "doctor") signupRole = "doctor";
-      if (demo === "patient") signupRole = "patient";
+      else if (demo === "patient") signupRole = "patient";
+      else if (demo === "admin") signupRole = "admin";
 
-      // Optional: prefill demo creds (only for sign-in)
+      // Prefill demo creds
       const emailEl = document.getElementById("email");
       const passEl = document.getElementById("password");
 
       if (mode === "signin") {
         if (demo === "doctor") {
           if (emailEl) emailEl.value = "doctor@care.com";
+          if (passEl) passEl.value = "123456";
+        } else if (demo === "admin") {
+          if (emailEl) emailEl.value = "admin@care.com";
           if (passEl) passEl.value = "123456";
         } else if (demo === "patient") {
           if (emailEl) emailEl.value = "";
@@ -178,7 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const me = await apiGET("api/me.php");
       authModal?.close();
 
-      if (me?.role === "doctor") window.location.href = "doctor.html";
+      if (me?.role === "admin") window.location.href = "admin.html";
+      else if (me?.role === "doctor") window.location.href = "doctor.html";
       else window.location.href = "patient.html";
     } catch (err) {
       alert(err.message || "Request failed");

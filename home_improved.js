@@ -61,8 +61,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   async function apiGET(url) {
     const res = await fetch(url, { credentials: "include" });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -73,8 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload || {}),
     });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -301,6 +315,10 @@ document.addEventListener("DOMContentLoaded", () => {
           if (emailInput) emailInput.value = "doctor@care.com";
           if (passwordInput) passwordInput.value = "123456";
           showAlert("Demo doctor credentials loaded. Click Sign In to continue.", "info");
+        } else if (demo === "admin") {
+          if (emailInput) emailInput.value = "admin@care.com";
+          if (passwordInput) passwordInput.value = "123456";
+          showAlert("Demo admin credentials loaded. Click Sign In to continue.", "info");
         } else if (demo === "patient") {
           if (emailInput) emailInput.value = "patient@care.com";
           if (passwordInput) passwordInput.value = "123456";
@@ -353,7 +371,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => {
         authModal?.close();
-        if (me?.role === "doctor") window.location.href = "doctor.html";
+        if (me?.role === "admin") window.location.href = "admin.html";
+        else if (me?.role === "doctor") window.location.href = "doctor.html";
         else window.location.href = "patient.html";
       }, 1000);
 

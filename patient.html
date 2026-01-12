@@ -36,6 +36,10 @@
           <span class="dash-nav__icon">💊</span>
           <span>Medications</span>
         </button>
+        <button class="dash-nav__item" data-p-view="messages">
+          <span class="dash-nav__icon">💬</span>
+          <span>Messages</span>
+        </button>
       </nav>
 
       <div class="dash-sidebar__footer">
@@ -498,6 +502,29 @@
                   <!-- This will be populated by JavaScript -->
                 </tbody>
               </table>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <!-- ================= MESSAGES PAGE ================== -->
+      <section class="p-view is-hidden" data-p-section="messages">
+        <header class="dash-main__header">
+          <div>
+            <button class="link-sm link-sm--back" data-p-view-link="dashboard">← Back</button>
+            <h1 class="dash-main__title">Messages from Doctors</h1>
+            <p class="dash-main__subtitle">View all messages and guidance from your healthcare providers</p>
+          </div>
+        </header>
+
+        <section class="dash-row">
+          <article class="card" style="max-width: 100%;">
+            <header class="card__head">
+              <h2 class="card__title">Messages</h2>
+            </header>
+
+            <div id="patientMessagesList" style="max-height: 600px; overflow-y: auto;">
+              <p class="muted" style="padding: 20px; text-align: center;">Loading messages...</p>
             </div>
           </article>
         </section>

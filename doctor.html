@@ -222,6 +222,33 @@
               <!-- filled by JS -->
               <p class="muted">Choose a patient from the list to view their summary.</p>
             </div>
+
+            <!-- Symptoms section -->
+            <div id="patientSymptomsSection" style="margin-top: 20px; display: none;">
+              <h3 style="margin-bottom: 10px;">Recent Symptoms Log</h3>
+              <div id="patientSymptomsList" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;">
+                <!-- filled by JS -->
+              </div>
+            </div>
+
+            <!-- Messaging section -->
+            <div id="patientMessagingSection" style="margin-top: 20px; border-top: 1px solid #e0e0e0; padding-top: 15px; display: none;">
+              <h3 style="margin-bottom: 10px;">Send Message</h3>
+              <div style="display: flex; gap: 10px;">
+                <textarea 
+                  id="doctorMessageInput" 
+                  placeholder="Type your message to the patient..." 
+                  style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; resize: vertical; min-height: 80px;">
+                </textarea>
+              </div>
+              <button 
+                id="btnSendMessage" 
+                class="btn btn--primary" 
+                style="margin-top: 10px;">
+                Send Message
+              </button>
+              <div id="messageStatus" style="margin-top: 10px; font-size: 0.9em;"></div>
+            </div>
           </article>
         </section>
       </section>

@@ -5,8 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------- API helpers ----------
   async function apiGET(url) {
     const res = await fetch(url, { credentials: "include" });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -17,8 +24,15 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload || {}),
     });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -421,6 +435,155 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================================
+  // PATIENTS TAB (WITH MESSAGING)
+  // =========================================================
+  const patientsList = document.getElementById("patientsList");
+  const patientsSearchInput = document.getElementById("patientsSearchInput");
+  const patientDetailCard = document.getElementById("patientDetailCard");
+  const patientDetailName = document.getElementById("patientDetailName");
+  const patientDetailMeta = document.getElementById("patientDetailMeta");
+  const patientDetailBody = document.getElementById("patientDetailBody");
+  const patientSymptomsSection = document.getElementById("patientSymptomsSection");
+  const patientSymptomsList = document.getElementById("patientSymptomsList");
+  const patientMessagingSection = document.getElementById("patientMessagingSection");
+  const doctorMessageInput = document.getElementById("doctorMessageInput");
+  const btnSendMessage = document.getElementById("btnSendMessage");
+  const messageStatus = document.getElementById("messageStatus");
+
+  let allPatients = [];
+  let selectedPatient = null;
+
+  async function loadPatientsList() {
+    allPatients = await apiGET("api/doctor_patients.php?risk=all&q=");
+    renderPatientsList("");
+  }
+
+  function renderPatientsList(query) {
+    if (!patientsList) return;
+    patientsList.innerHTML = "";
+    const q = (query || "").trim().toLowerCase();
+
+    allPatients
+      .filter(p => !q || p.name.toLowerCase().includes(q) || (p.conditionName || "").toLowerCase().includes(q))
+      .forEach((p) => {
+        const div = document.createElement("div");
+        div.className = "patient-list-item";
+        div.style.cssText = "padding: 12px; border-bottom: 1px solid #e0e0e0; cursor: pointer; hover-effect: all 0.2s;";
+        div.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 600;">${esc(p.name)}</div>
+              <div style="font-size: 0.9em; color: #666;">${esc(p.conditionName || "—")} • Age ${esc(p.age ?? "—")}</div>
+            </div>
+            <span style="padding: 4px 8px; border-radius: 4px; background: ${p.risk === 'high' ? '#ffebee' : p.risk === 'medium' ? '#fff3e0' : '#e8f5e9'}; color: ${p.risk === 'high' ? '#c62828' : p.risk === 'medium' ? '#e65100' : '#2e7d32'}; font-size: 0.85em; font-weight: 600;">${esc(p.risk || "low")}</span>
+          </div>
+        `;
+        div.addEventListener("click", () => {
+          selectedPatient = p;
+          renderPatientDetail();
+        });
+        patientsList.appendChild(div);
+      });
+  }
+
+  async function renderPatientDetail() {
+    if (!selectedPatient) return;
+
+    // Update header
+    if (patientDetailName) patientDetailName.textContent = selectedPatient.name;
+    if (patientDetailMeta) patientDetailMeta.textContent = `${selectedPatient.conditionName || "—"} • Age ${selectedPatient.age ?? "—"} • Risk: ${selectedPatient.risk || "low"}`;
+
+    // Load patient details and symptoms
+    try {
+      const detail = await apiGET(`api/doctor_patient_detail.php?patient_id=${selectedPatient.id}`);
+      
+      // Display patient info
+      if (patientDetailBody) {
+        patientDetailBody.innerHTML = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <strong>Condition:</strong> ${esc(detail.patient?.conditionName || "—")}<br/>
+              <strong>Last Visit:</strong> ${esc(detail.patient?.lastVisit || "—")}<br/>
+              <strong>Allergies:</strong> ${esc(detail.patient?.allergies || "—")}<br/>
+            </div>
+            <div>
+              <strong>Email:</strong> ${esc(detail.patient?.email || "—")}<br/>
+              <strong>Phone:</strong> ${esc(detail.patient?.phone || "—")}<br/>
+              <strong>Last Labs:</strong> ${esc(detail.patient?.lastLabs || "—")}<br/>
+            </div>
+          </div>
+        `;
+      }
+
+      // Display symptoms log
+      if (patientSymptomsSection && patientSymptomsList) {
+        if (detail.recentSymptoms && detail.recentSymptoms.length > 0) {
+          patientSymptomsSection.style.display = "block";
+          patientSymptomsList.innerHTML = "";
+          detail.recentSymptoms.slice(0, 10).forEach((sym) => {
+            const div = document.createElement("div");
+            div.style.cssText = "padding: 10px; background: #f5f5f5; margin-bottom: 8px; border-radius: 4px; border-left: 3px solid #2F80ED;";
+            div.innerHTML = `
+              <strong>${esc(sym.symptom)}</strong> <span style="color: #666; font-size: 0.9em;"><strong>Severity:</strong> ${esc(sym.severity)}</span><br/>
+              <span style="color: #999; font-size: 0.85em;">📅 ${esc(sym.occurredAt)} ${sym.notes ? '- ' + esc(sym.notes) : ''}</span>
+            `;
+            patientSymptomsList.appendChild(div);
+          });
+        } else {
+          patientSymptomsSection.style.display = "none";
+        }
+      }
+
+      // Show messaging section
+      if (patientMessagingSection) {
+        patientMessagingSection.style.display = "block";
+      }
+    } catch (e) {
+      if (patientDetailBody) patientDetailBody.innerHTML = `<p style="color: red;">Error loading patient details: ${esc(e.message)}</p>`;
+    }
+
+    // Clear previous message and focus on input
+    if (doctorMessageInput) {
+      doctorMessageInput.value = "";
+      doctorMessageInput.focus();
+    }
+    if (messageStatus) messageStatus.innerHTML = "";
+  }
+
+  patientsSearchInput?.addEventListener("input", () => renderPatientsList(patientsSearchInput.value));
+
+  // Send message from doctor to patient
+  btnSendMessage?.addEventListener("click", async () => {
+    if (!selectedPatient) {
+      alert("Please select a patient first");
+      return;
+    }
+
+    const messageText = (doctorMessageInput?.value || "").trim();
+    if (!messageText) {
+      alert("Please write a message");
+      return;
+    }
+
+    try {
+      if (messageStatus) messageStatus.innerHTML = "Sending...";
+      
+      await apiPOST("api/doctor_message_send.php", {
+        patient_id: selectedPatient.id,
+        message_text: messageText,
+      });
+
+      if (doctorMessageInput) doctorMessageInput.value = "";
+      if (messageStatus) messageStatus.innerHTML = '<span style="color: green;">✓ Message sent successfully!</span>';
+      setTimeout(() => {
+        if (messageStatus) messageStatus.innerHTML = "";
+      }, 3000);
+    } catch (e) {
+      if (messageStatus) messageStatus.innerHTML = `<span style="color: red;">Error: ${esc(e.message)}</span>`;
+    }
+  });
+
+  // =========================================================
   // INIT
   // =========================================================
   (async () => {
@@ -430,6 +593,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await loadDashboard();
       await loadAppointmentsTab();
       await loadPrescriptionsTab();
+      await loadPatientsList();    // Load patients for patients tab
       // Profile loads when profile tab is opened
     } catch (e) {
       alert(e.message);

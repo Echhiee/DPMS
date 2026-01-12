@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard — MediTrack Pro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard">
+  <section class="dashboard__layout">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="dash-sidebar">
+      <a href="index.html" class="dash-brand">
+        <svg viewBox="0 0 48 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M2 13h7l2.5-8 3.5 12 2.5-7 2.5 3H46"
+            fill="none"
+            stroke="#2F80ED"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="dash-brand__text">MediTrack Admin</span>
+      </a>
+
+      <nav class="dash-nav">
+        <button class="dash-nav__item dash-nav__item--active" data-section="dashboard">
+          <span class="dash-nav__icon">📊</span>
+          <span>Dashboard</span>
+        </button>
+        <button class="dash-nav__item" data-section="registrations">
+          <span class="dash-nav__icon">📝</span>
+          <span>Registrations</span>
+        </button>
+        <button class="dash-nav__item" data-section="patients">
+          <span class="dash-nav__icon">🧑‍⚕️</span>
+          <span>Patients</span>
+        </button>
+        <button class="dash-nav__item" data-section="doctors">
+          <span class="dash-nav__icon">👨‍⚕️</span>
+          <span>Doctors</span>
+        </button>
+        <button class="dash-nav__item" data-section="loginhistory">
+          <span class="dash-nav__icon">🔐</span>
+          <span>Login History</span>
+        </button>
+      </nav>
+
+      <div class="dash-sidebar__footer">
+        <button class="dash-nav__item dash-nav__item--danger" id="btnSignOutAdmin">
+          <span class="dash-nav__icon">🚪</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <main class="dash-main">
+      <!-- top header -->
+      <header class="dash-main__header">
+        <div>
+          <h1 class="dash-main__title" id="adminGreeting">
+            Welcome, Admin!
+          </h1>
+        </div>
+        <div class="dash-main__context">
+          <span class="pill">MediTrack Healthcare Administration</span>
+        </div>
+      </header>
+
+      <!-- ========== DASHBOARD TAB ========== -->
+      <section class="tab-section tab-section--active" data-section="dashboard">
+        <!-- stat cards -->
+        <section class="dash-row dash-row--stats">
+          <article class="card stat-card">
+            <div class="stat-card__label">Total Patients</div>
+            <div class="stat-card__value" id="statTotalPatients">0</div>
+            <div class="stat-card__meta">Registered</div>
+          </article>
+          <article class="card stat-card">
+            <div class="stat-card__label">Total Doctors</div>
+            <div class="stat-card__value" id="statTotalDoctors">0</div>
+            <div class="stat-card__meta">Registered</div>
+          </article>
+          <article class="card stat-card">
+            <div class="stat-card__label">Pending Approvals</div>
+            <div class="stat-card__value" id="statPendingRequests">0</div>
+            <div class="stat-card__meta">Waiting review</div>
+          </article>
+          <article class="card stat-card">
+            <div class="stat-card__label">Pending Users</div>
+            <div class="stat-card__value" id="statPendingUsers">0</div>
+            <div class="stat-card__meta">Not approved</div>
+          </article>
+        </section>
+      </section>
+
+      <!-- ========== REGISTRATIONS TAB ========== -->
+      <section class="tab-section" data-section="registrations">
+        <section class="dash-row">
+          <article class="card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Pending Registration Requests</h2>
+                <p class="muted tiny">Review and approve/reject new registrations</p>
+              </div>
+            </header>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Type</th>
+                  <th>Detail</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="registrationsTableBody">
+                <tr><td colspan="6" style="text-align: center; padding: 20px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
+      </section>
+
+      <!-- ========== PATIENTS TAB ========== -->
+      <section class="tab-section" data-section="patients">
+        <section class="dash-row">
+          <article class="card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Patient Management</h2>
+                <p class="muted tiny">View and manage all registered patients</p>
+              </div>
+              <input
+                type="text"
+                class="input input--small"
+                placeholder="Search patients..."
+                id="patientsSearchInput"
+                style="width: 200px;"
+              />
+            </header>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Blood Type</th>
+                  <th>Registered</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="patientsTableBody">
+                <tr><td colspan="6" style="text-align: center; padding: 20px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
+      </section>
+
+      <!-- ========== DOCTORS TAB ========== -->
+      <section class="tab-section" data-section="doctors">
+        <section class="dash-row">
+          <article class="card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Doctor Management</h2>
+                <p class="muted tiny">View and manage all registered doctors</p>
+              </div>
+              <input
+                type="text"
+                class="input input--small"
+                placeholder="Search doctors..."
+                id="doctorsSearchInput"
+                style="width: 200px;"
+              />
+            </header>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Speciality</th>
+                  <th>Status</th>
+                  <th>Registered</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="doctorsTableBody">
+                <tr><td colspan="6" style="text-align: center; padding: 20px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
+      </section>
+
+      <!-- ========== LOGIN HISTORY TAB ========== -->
+      <section class="tab-section" data-section="loginhistory">
+        <section class="dash-row">
+          <article class="card">
+            <header class="card__head">
+              <div>
+                <h2 class="card__title">Login History</h2>
+                <p class="muted tiny">Track all user login attempts and activities</p>
+              </div>
+            </header>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+              <input
+                type="text"
+                class="input input--small"
+                placeholder="Search by email..."
+                id="loginHistorySearch"
+                style="width: 250px;"
+              />
+              <select class="input input--small" id="loginHistoryRoleFilter" style="width: 150px;">
+                <option value="">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="doctor">Doctor</option>
+                <option value="patient">Patient</option>
+              </select>
+              <select class="input input--small" id="loginHistoryStatusFilter" style="width: 150px;">
+                <option value="">All Status</option>
+                <option value="success">Success</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Login Time</th>
+                  <th>IP Address</th>
+                  <th>Reason (if failed)</th>
+                </tr>
+              </thead>
+              <tbody id="loginHistoryTableBody">
+                <tr><td colspan="7" style="text-align: center; padding: 20px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
+      </section>
+    </main>
+  </section>
+
+  <!-- Modal for rejection reason -->
+  <div id="rejectModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 8px; min-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <h2 style="margin-top: 0;">Reject Registration</h2>
+      <p>Please provide a reason for rejection:</p>
+      <textarea id="rejectionReason" placeholder="Enter rejection reason..." style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; resize: vertical;"></textarea>
+      <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;">
+        <button id="btnCancelReject" class="btn" style="background: #ddd; color: #333;">Cancel</button>
+        <button id="btnConfirmReject" class="btn btn--danger">Reject</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

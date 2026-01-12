@@ -23,11 +23,13 @@ try {
     // Create users table
     $pdo->exec("CREATE TABLE IF NOT EXISTS users (
         id INT PRIMARY KEY AUTO_INCREMENT,
-        role ENUM('doctor', 'patient') NOT NULL,
+        role ENUM('admin', 'doctor', 'patient') NOT NULL,
         full_name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
     // Create doctor_profiles table
@@ -105,6 +107,59 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         KEY fk_symptom_patient (patient_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+    // Create messages table
+    $pdo->exec("CREATE TABLE IF NOT EXISTS messages (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        doctor_id INT NOT NULL,
+        patient_id INT NOT NULL,
+        message_text TEXT NOT NULL,
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        KEY fk_message_doctor (doctor_id),
+        KEY fk_message_patient (patient_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+    // Create admin_profiles table
+    $pdo->exec("CREATE TABLE IF NOT EXISTS admin_profiles (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT UNIQUE NOT NULL,
+        phone VARCHAR(20),
+        department VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        KEY fk_admin_user (user_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+    // Create registration_requests table to track pending registrations
+    $pdo->exec("CREATE TABLE IF NOT EXISTS registration_requests (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT UNIQUE NOT NULL,
+        request_type ENUM('doctor', 'patient') NOT NULL,
+        status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+        rejection_reason TEXT,
+        requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        reviewed_at TIMESTAMP NULL,
+        reviewed_by INT,
+        KEY fk_request_user (user_id),
+        KEY fk_request_reviewer (reviewed_by)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+    // Create login_history table to track all login attempts
+    $pdo->exec("CREATE TABLE IF NOT EXISTS login_history (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL,
+        login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        ip_address VARCHAR(45),
+        user_agent TEXT,
+        login_status ENUM('success', 'failed') DEFAULT 'success',
+        failure_reason VARCHAR(255),
+        KEY fk_login_user (user_id),
+        KEY idx_login_time (login_time),
+        KEY idx_user_email (email)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
     // Re-enable foreign key checks

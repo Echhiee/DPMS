@@ -4,8 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function apiGET(url) {
     const res = await fetch(url, { credentials: "include" });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -16,8 +23,15 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload || {}),
     });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) throw new Error(json?.error || "Request failed");
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {
+      throw new Error(`Invalid JSON from ${url}: ${e.message}`);
+    }
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || `Request failed with status ${res.status}`);
+    }
     return json.data;
   }
 
@@ -484,6 +498,66 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!rx.length) rxList.innerHTML = `<li class="muted small">No prescriptions yet.</li>`;
   }
 
+  // ===== MESSAGES TAB =====
+  const patientMessagesList = document.getElementById("patientMessagesList");
+
+  async function loadMessages() {
+    try {
+      const messages = await apiGET("api/patient_messages.php");
+      
+      if (!patientMessagesList) return;
+      
+      if (!messages || messages.length === 0) {
+        patientMessagesList.innerHTML = `
+          <div style="padding: 40px 20px; text-align: center; color: #999;">
+            <p style="font-size: 3em; margin-bottom: 10px;">📬</p>
+            <p>No messages yet.</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Your doctors will send you messages here after reviewing your symptoms and appointments.</p>
+          </div>
+        `;
+        return;
+      }
+
+      patientMessagesList.innerHTML = "";
+      messages.forEach((msg, idx) => {
+        const div = document.createElement("div");
+        div.style.cssText = "padding: 15px; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 12px; background: " + (msg.isRead ? "#f9f9f9" : "#fffbf0") + ";";
+        
+        const dateObj = new Date(msg.createdAt);
+        const dateStr = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        div.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div>
+              <div style="font-weight: 600; font-size: 1.1em; color: #2F80ED;">Dr. ${esc(msg.doctorName || "Doctor")}</div>
+              <div style="font-size: 0.9em; color: #666;">${esc(msg.speciality || "Healthcare Provider")}</div>
+            </div>
+            <div style="font-size: 0.85em; color: #999; text-align: right;">
+              <div>${dateStr}</div>
+              <div style="margin-top: 4px; padding: 3px 8px; background: ${msg.isRead ? '#e0e0e0' : '#fff3cd'}; border-radius: 3px; font-weight: 500;">${msg.isRead ? '✓ Read' : '● Unread'}</div>
+            </div>
+          </div>
+          <div style="background: white; padding: 12px; border-radius: 4px; line-height: 1.6; color: #333;">
+            ${esc(msg.messageText).replace(/\n/g, '<br/>')}
+          </div>
+        `;
+        
+        patientMessagesList.appendChild(div);
+      });
+    } catch (e) {
+      if (patientMessagesList) {
+        patientMessagesList.innerHTML = `<p style="color: red; padding: 20px;">Error loading messages: ${esc(e.message)}</p>`;
+      }
+    }
+  }
+
+  // Load messages when messages tab is clicked
+  document.querySelectorAll(".dash-nav__item[data-p-view='messages']").forEach(btn => {
+    btn.addEventListener("click", () => {
+      loadMessages().catch(e => alert(e.message));
+    });
+  });
+
   // ===== INIT =====
   (async () => {
     try {
@@ -493,6 +567,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await loadSymptoms();
       await loadMedications();
       await loadPrescriptionsOptional();
+      await loadMessages();  // Load messages on init
     } catch (e) {
       alert(e.message);
     }

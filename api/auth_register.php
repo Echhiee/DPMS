@@ -24,8 +24,8 @@ if ($check->fetch()) json_fail('Email already registered', 409);
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = $pdo->prepare("INSERT INTO users(role, full_name, email, password_hash) VALUES(?,?,?,?)");
-$stmt->execute([$role, $name, $email, $hash]);
+$stmt = $pdo->prepare("INSERT INTO users(role, full_name, email, password_hash, status) VALUES(?,?,?,?,?)");
+$stmt->execute([$role, $name, $email, $hash, 'pending']);
 $uid = (int)$pdo->lastInsertId();
 
 // Create role-specific profile
@@ -35,12 +35,17 @@ if ($role === 'patient') {
   $pdo->prepare("INSERT INTO doctor_profiles(user_id) VALUES(?)")->execute([$uid]);
 }
 
+// Create registration request for admin approval
+$pdo->prepare("INSERT INTO registration_requests(user_id, request_type, status) VALUES(?,?,?)")
+  ->execute([$uid, $role, 'pending']);
+
 start_session();
 $_SESSION['user'] = [
   'id' => $uid,
   'role' => $role,
   'name' => $name,
-  'email' => $email
+  'email' => $email,
+  'status' => 'pending'
 ];
 
-json_ok($_SESSION['user']);
+json_ok(['message' => 'Registration submitted. Please wait for admin approval.', 'user' => $_SESSION['user']]);
