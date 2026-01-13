@@ -9,18 +9,17 @@ $doctorId = $u['id'];
 $q = trim((string)($_GET['q'] ?? ''));
 $status = trim((string)($_GET['status'] ?? 'all'));
 
-$sql = "SELECT m.id, m.name medication, m.dosage, m.frequency, m.start_date startDate, m.end_date endDate,
-               m.instructions, m.status,
+$sql = "SELECT pr.id, pr.medication_name medication, pr.dosage, pr.frequency, pr.start_date startDate, pr.end_date endDate,
+               pr.notes instructions, 'active' status,
                p.id patientId, p.full_name patientName
-        FROM medications m
-        JOIN users p ON p.id=m.patient_id
-        WHERE m.doctor_id=?";
+        FROM prescriptions pr
+        JOIN users p ON p.id=pr.patient_id
+        WHERE pr.doctor_id=?";
 $params = [$doctorId];
 
-if ($status !== '' && $status !== 'all') { $sql .= " AND m.status=?"; $params[] = $status; }
-if ($q !== '') { $sql .= " AND (m.name LIKE ? OR p.full_name LIKE ?)"; $params[]="%$q%"; $params[]="%$q%"; }
+if ($q !== '') { $sql .= " AND (pr.medication_name LIKE ? OR p.full_name LIKE ?)"; $params[]="%$q%"; $params[]="%$q%"; }
 
-$sql .= " ORDER BY m.created_at DESC LIMIT 200";
+$sql .= " ORDER BY pr.created_at DESC LIMIT 200";
 
 $stmt = db()->prepare($sql);
 $stmt->execute($params);

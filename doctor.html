@@ -316,6 +316,52 @@
         </section>
       </section>
 
+  <!-- New Prescription Modal -->
+  <div id="prescriptionModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:2000;">
+    <div style="background:#fff; padding:20px; border-radius:8px; width:520px; max-width:95%; box-shadow:0 8px 24px rgba(0,0,0,0.2);">
+      <h3 style="margin-top:0;">New Prescription</h3>
+      <div style="display: grid; gap:10px;">
+        <div>
+          <label style="display:block; font-weight:600;">Patient</label>
+          <input id="prescPatientName" class="input" placeholder="Select a patient from Patients tab or leave blank" readonly />
+          <input id="prescPatientId" type="hidden" />
+        </div>
+        <div>
+          <label style="display:block; font-weight:600;">Medication <span style="color:#c00">*</span></label>
+          <input id="prescName" class="input" placeholder="e.g. Amoxicillin 500mg" />
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div style="flex:1">
+            <label style="display:block; font-weight:600;">Dosage</label>
+            <input id="prescDosage" class="input" placeholder="e.g. 500mg" />
+          </div>
+          <div style="flex:1">
+            <label style="display:block; font-weight:600;">Frequency</label>
+            <input id="prescFrequency" class="input" placeholder="e.g. Twice daily" />
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div style="flex:1">
+            <label style="display:block; font-weight:600;">Start Date</label>
+            <input id="prescStart" class="input" placeholder="YYYY-MM-DD" />
+          </div>
+          <div style="flex:1">
+            <label style="display:block; font-weight:600;">End Date</label>
+            <input id="prescEnd" class="input" placeholder="YYYY-MM-DD" />
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-weight:600;">Instructions</label>
+          <textarea id="prescInstructions" class="input" rows="4" placeholder="Dosage instructions, notes..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button id="btnCancelPrescription" class="btn">Cancel</button>
+          <button id="btnSavePrescription" class="btn btn--primary">Save Prescription</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
       <!-- ========== PRESCRIPTIONS TAB ========== -->
       <section class="tab-section" data-section="prescriptions">
         <section class="dash-row prescriptions-layout">

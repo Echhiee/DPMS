@@ -3,11 +3,15 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/helpers.php';
 
+
 $u = require_role('doctor');
 $doctor_id = $u['id'];
 
-$patient_id = (int)($_POST['patient_id'] ?? 0);
-$message_text = trim($_POST['message_text'] ?? '');
+require_method('POST');
+$in = read_json();
+
+$patient_id = (int)($in['patient_id'] ?? 0);
+$message_text = trim((string)($in['message_text'] ?? ''));
 
 if ($patient_id <= 0) json_fail('patient_id required');
 if (empty($message_text)) json_fail('message_text required');

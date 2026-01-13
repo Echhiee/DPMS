@@ -19,8 +19,8 @@ $instructions = (string)($in['instructions'] ?? null);
 
 if ($patientId<=0 || $name==='') json_fail('patient_id and name required');
 
-$stmt = db()->prepare("INSERT INTO medications (patient_id, doctor_id, name, dosage, frequency, start_date, end_date, instructions, status)
-                       VALUES (?,?,?,?,?,?,?,?, 'active')");
+$stmt = db()->prepare("INSERT INTO prescriptions (patient_id, doctor_id, medication_name, dosage, frequency, start_date, end_date, notes)
+                       VALUES (?,?,?,?,?,?,?,?)");
 $stmt->execute([$patientId, $doctorId, $name, $dosage, $frequency, $startDate, $endDate, $instructions]);
 
 json_ok(['id' => (int)db()->lastInsertId()]);

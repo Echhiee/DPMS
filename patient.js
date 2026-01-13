@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function requirePatient() {
     const me = await apiGET("api/me.php");
     if (!me || me.role !== "patient") {
-      window.location.href = "index.html";
+      window.location.href = "index_improved.html";
       return null;
     }
     return me;
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== Sign out =====
   document.getElementById("btnSignOutPatient")?.addEventListener("click", async () => {
     try { await apiPOST("api/auth_logout.php", {}); } catch (_) {}
-    window.location.href = "index.html";
+    window.location.href = "index_improved.html";
   });
 
   const esc = (s) =>

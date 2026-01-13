@@ -16,7 +16,7 @@ $todayAppts = (int)$stmt->fetch()['c'];
 
 $critical = (int)$pdo->query("SELECT COUNT(*) c FROM patient_profiles WHERE risk='high'")->fetch()['c'];
 
-$stmt = $pdo->prepare("SELECT COUNT(*) c FROM medications WHERE doctor_id=?");
+$stmt = $pdo->prepare("SELECT COUNT(*) c FROM prescriptions WHERE doctor_id=?");
 $stmt->execute([$doctorId]);
 $prescriptions = (int)$stmt->fetch()['c'];
 

@@ -1,6 +1,6 @@
-// admin.js - Admin Dashboard
+// admins.js - Admin Dashboard (renamed from admin.js)
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("admin.js loaded");
+  console.log("admins.js loaded");
 
   // API helpers
   async function apiGET(url) {
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const esc = (s) =>
-    String(s ?? "").replace(/[&<>"']/g, (m) => ({
+    String(s ?? "").replace(/[&<>\"']/g, (m) => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
@@ -337,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </td>
       `;
 
-      // ✅ FIXED: approve doctor uses admin_doctor_action.php
       if (doctor.status === "pending") {
         tr.querySelector(".js-approve-doctor")?.addEventListener("click", async () => {
           if (!confirm("Approve this doctor?")) return;
@@ -355,7 +354,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // ✅ FIXED: delete doctor uses admin_doctor_action.php
       tr.querySelector(".js-delete-doctor")?.addEventListener("click", async () => {
         if (!confirm("Delete this doctor? This cannot be undone.")) return;
         try {

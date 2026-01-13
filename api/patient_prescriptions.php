@@ -7,12 +7,12 @@ $u = require_role('patient');
 $pid = $u['id'];
 
 $stmt = db()->prepare("
-  SELECT m.id, m.name, m.dosage, m.frequency, m.start_date startDate, m.end_date endDate, m.status,
+  SELECT pr.id, pr.medication_name name, pr.dosage, pr.frequency, pr.start_date startDate, pr.end_date endDate, 'active' status,
          d.full_name doctorName
-  FROM medications m
-  LEFT JOIN users d ON d.id = m.doctor_id
-  WHERE m.patient_id=?
-  ORDER BY m.created_at DESC
+  FROM prescriptions pr
+  LEFT JOIN users d ON d.id = pr.doctor_id
+  WHERE pr.patient_id=?
+  ORDER BY pr.created_at DESC
 ");
 $stmt->execute([$pid]);
 
