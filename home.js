@@ -152,23 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (demo === "doctor") signupRole = "doctor";
       else if (demo === "patient") signupRole = "patient";
       else if (demo === "admin") signupRole = "admin";
-
-      // Prefill demo creds
-      const emailEl = document.getElementById("email");
-      const passEl = document.getElementById("password");
-
-      if (mode === "signin") {
-        if (demo === "doctor") {
-          if (emailEl) emailEl.value = "doctor@care.com";
-          if (passEl) passEl.value = "123456";
-        } else if (demo === "admin") {
-          if (emailEl) emailEl.value = "admin@care.com";
-          if (passEl) passEl.value = "123456";
-        } else if (demo === "patient") {
-          if (emailEl) emailEl.value = "";
-          if (passEl) passEl.value = "";
-        }
-      }
     });
   });
 

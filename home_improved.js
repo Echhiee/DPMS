@@ -309,22 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       const demo = btn.getAttribute("data-demo");
 
-      if (mode === "signin") {
-        // Prefill demo credentials for sign-in
-        if (demo === "doctor") {
-          if (emailInput) emailInput.value = "doctor@care.com";
-          if (passwordInput) passwordInput.value = "123456";
-          showAlert("Demo doctor credentials loaded. Click Sign In to continue.", "info");
-        } else if (demo === "admin") {
-          if (emailInput) emailInput.value = "admin@care.com";
-          if (passwordInput) passwordInput.value = "123456";
-          showAlert("Demo admin credentials loaded. Click Sign In to continue.", "info");
-        } else if (demo === "patient") {
-          if (emailInput) emailInput.value = "patient@care.com";
-          if (passwordInput) passwordInput.value = "123456";
-          showAlert("Demo patient credentials loaded. Click Sign In to continue.", "info");
-        }
-      } else {
+      if (mode === "signup") {
         // For signup, just set the role
         signupRole = demo;
         const roleBtn = document.querySelector(`[data-role="${demo}"]`);
