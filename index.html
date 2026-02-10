@@ -246,7 +246,7 @@
   <!-- ========== SIMPLE AUTH CHOICE MODAL ========== -->
   <!-- ========== AUTH MODAL WITH LOGIN FORM ========== -->
 <dialog id="authModal" class="auth">
-  <form method="dialog" class="auth__card" id="authForm">
+  <form method="dialog" class="auth__card" id="authForm" autocomplete="off">
     <header class="auth__head">
       <h3>Welcome to Echhya’s Care</h3>
       <button class="auth__close" value="cancel" aria-label="Close">✕</button>
@@ -285,7 +285,7 @@
         <label>Email</label>
         <div class="input">
           <span class="i">✉️</span>
-          <input type="email" id="email" placeholder="Enter your email" />
+          <input type="email" id="email" placeholder="Enter your email" autocomplete="off" />
         </div>
       </div>
 
@@ -293,7 +293,7 @@
         <label>Password</label>
         <div class="input">
           <span class="i">🔒</span>
-          <input type="password" id="password" placeholder="Enter your password" />
+          <input type="password" id="password" placeholder="Enter your password" autocomplete="off" />
         </div>
       </div>
 
