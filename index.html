@@ -285,7 +285,7 @@
         <label>Email</label>
         <div class="input">
           <span class="i">✉️</span>
-          <input type="email" id="email" placeholder="Enter your email" autocomplete="off" />
+          <input type="email" id="email" name="search" placeholder="Enter your email" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" />
         </div>
       </div>
 
@@ -293,7 +293,7 @@
         <label>Password</label>
         <div class="input">
           <span class="i">🔒</span>
-          <input type="password" id="password" placeholder="Enter your password" autocomplete="off" />
+          <input type="password" id="password" name="not-password" placeholder="Enter your password" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');" />
         </div>
       </div>
 

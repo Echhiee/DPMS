@@ -306,7 +306,7 @@
           <label for="email">Email Address <span class="required">*</span></label>
           <div class="input" data-input="email">
             <span class="i">✉️</span>
-            <input type="email" id="email" placeholder="you@example.com" autocomplete="off" />
+            <input type="email" id="email" name="search" placeholder="you@example.com" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" />
           </div>
           <span class="input-error" data-error="email"></span>
         </div>
@@ -315,7 +315,7 @@
           <label for="password">Password <span class="required">*</span></label>
           <div class="input" data-input="password">
             <span class="i">🔒</span>
-            <input type="password" id="password" placeholder="Enter password" autocomplete="off" />
+            <input type="password" id="password" name="not-password" placeholder="Enter password" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');" />
             <button type="button" class="toggle-password" aria-label="Toggle password visibility">
               <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
